@@ -43,7 +43,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - "echo start;
-          [[ ! -f /config/Jackett/ServerConfig.json ]] && echo '{ "BasePathOverride": "/jackett"}' > /config/Jackett/ServerConfig.json;
+          [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/ &&  echo '{ \"BasePathOverride\": \"/jackett\"}' > /config/Jackett/ServerConfig.json;
           echo end;"
         volumeMounts: 
         - mountPath: /config 
