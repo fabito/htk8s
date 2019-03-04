@@ -10,8 +10,6 @@ spec:
     name: webui
   selector:
     run: transmission
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +22,6 @@ spec:
   selector:
     matchLabels:
       run: transmission
-  strategy: {}
   template:
     metadata:
       labels:
@@ -34,30 +31,28 @@ spec:
         # runAsUser: 1000
         # runAsGroup: 1000
         fsGroup: 1000
-      initContainers:
-      - name: setup-transmission
-        image: busybox
-        command: ["sh", "-c"]
-        args:
-          - "echo starting;
-            echo '{\"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
-            echo done;"
-        volumeMounts: 
-        - mountPath: /config 
-          name: htpc-home
-          subPath: transmission
-      containers:
-      - env:
+      # initContainers:
+      # - name: setup-transmission
+      #   image: busybox
+      #   command: ["sh", "-c"]
+      #   args:
+      #     - "echo starting;
+      #       echo '{\"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
+      #       echo done;"
+      #   volumeMounts: 
+      #   - mountPath: /config 
+      #     name: htpc-home
+      #     subPath: transmission
+      containers:    
+      - name: transmission
+        image: linuxserver/transmission
+        env:
         - name: TZ
           value: America/Sao_Paulo
         - name: PUID
           value: "1000"
         - name: PGID
           value: "1000"
-        # - name: TRANSMISSION_WEB_HOME
-        #   value: /combustion-release/          
-        image: linuxserver/transmission
-        name: transmission
         ports:
         - containerPort: 9091
           name: webui

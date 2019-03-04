@@ -10,8 +10,6 @@ spec:
     name: webui
   selector:
     run: sonarr
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +22,6 @@ spec:
   selector:
     matchLabels:
       run: sonarr
-  strategy: {}
   template:
     metadata:
       labels:
@@ -39,9 +36,7 @@ spec:
         image: busybox
         command: ["sh", "-c"]
         args:
-          - "echo start;
-          [[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>' > /config/config.xml;
-          echo end;"
+          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>'>/config/config.xml;echo end;"
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home

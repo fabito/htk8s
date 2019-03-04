@@ -10,8 +10,6 @@ spec:
     name: webui
   selector:
     run: jackett
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +22,6 @@ spec:
   selector:
     matchLabels:
       run: jackett
-  strategy: {}
   template:
     metadata:
       labels:

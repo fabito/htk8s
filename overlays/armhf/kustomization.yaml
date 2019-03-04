@@ -6,14 +6,10 @@ bases:
 
 images:
   - name: linuxserver/jackett
-    newName: lsioarmhf/jackett
-    newTag: latest
+    newTag: arm32v6-latest
   - name: linuxserver/sonarr
-    newName: lsioarmhf/sonarr
-    newTag: latest
+    newTag: arm32v6-latest
   - name: linuxserver/radarr
-    newName: lsioarmhf/radarr
-    newTag: latest
+    newTag: arm32v6-latest
   - name: linuxserver/transmission
-    newName: lsioarmhf/transmission
-    newTag: latest
+    newTag: arm32v6-latest

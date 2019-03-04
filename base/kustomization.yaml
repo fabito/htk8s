@@ -11,4 +11,7 @@ resources:
 - radarr.yaml
 - sonarr.yaml
 - transmission.yaml
+- ingress.yaml
 
+# patchesStrategicMerge:
+# - env.yaml

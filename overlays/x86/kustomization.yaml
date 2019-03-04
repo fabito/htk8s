@@ -4,16 +4,12 @@ kind: Kustomization
 bases:
 - ../../base
 
-# images:
-#   - name: jackett
-#     newName: linuxserver/jackett
-#     newTag: latest
-#   - name: sonarr
-#     newName: linuxserver/sonarr
-#     newTag: latest
-#   - name: radarr
-#     newName: linuxserver/radarr
-#     newTag: latest
-#   - name: transmission
-#     newName: linuxserver/transmission
-#     newTag: latest
+images:
+  - name: linuxserver/jackett
+    newTag: amd64-latest
+  - name: linuxserver/sonarr
+    newTag: amd64-latest
+  - name: linuxserver/radarr
+    newTag: amd64-latest
+  - name: linuxserver/transmission
+    newTag: amd64-latest
