@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+spec:
+  ports:
+  - port: 9091
+    protocol: TCP
+    targetPort: 9091
+    name: webui
+  selector:
+    run: transmission
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: transmission
+  name: transmission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: transmission
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: transmission
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: setup-transmission
+        image: busybox
+        command: ["sh", "-c"]
+        args:
+          - "echo starting;
+            echo '{\"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
+            echo done;"
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: transmission
+      containers:
+      - env:
+        - name: TZ
+          value: America/Sao_Paulo
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        # - name: TRANSMISSION_WEB_HOME
+        #   value: /combustion-release/          
+        image: linuxserver/transmission
+        name: transmission
+        ports:
+        - containerPort: 9091
+          name: webui
+          protocol: TCP
+        - containerPort: 51413
+          name: torrent-tcp
+          protocol: TCP
+        - containerPort: 51413
+          name: torrent-udp
+          protocol: UDP
+        resources: {}
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: transmission
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads
+        - mountPath: /watch
+          name: htpc-home
+          subPath: watch
+      volumes: 
+      - hostPath: 
+          path: /home/fabio/.htpc 
+          type: Directory 
+        name: htpc-home

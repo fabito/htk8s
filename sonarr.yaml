@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: sonarr
+spec:
+  ports:
+  - port: 8989
+    protocol: TCP
+    targetPort: 8989
+    name: webui
+  selector:
+    run: sonarr
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: sonarr
+  name: sonarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: sonarr
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: sonarr
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000    
+      initContainers:
+      - name: config
+        image: busybox
+        command: ["sh", "-c"]
+        args:
+          - "echo start;
+          [[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>' > /config/config.xml;
+          echo end;"
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: sonarr        
+      containers:
+      - env:
+        - name: TZ
+          value: America/Sao_Paulo
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: linuxserver/sonarr
+        name: sonarr
+        ports:
+        - containerPort: 8989
+          name: webui
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: sonarr
+        - mountPath: /tv 
+          name: htpc-home
+          subPath: media/tv
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads
+        resources: {}
+      volumes: 
+      - hostPath: 
+          path: /home/fabio/.htpc 
+          type: Directory 
+        name: htpc-home

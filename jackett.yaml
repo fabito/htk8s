@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: jackett
+spec:
+  ports:
+  - port: 9117
+    protocol: TCP
+    targetPort: 9117
+    name: webui
+  selector:
+    run: jackett
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: jackett
+  name: jackett
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: jackett
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: jackett
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: config
+        image: busybox
+        command: ["sh", "-c"]
+        args:
+          - "echo start;
+          [[ ! -f /config/Jackett/ServerConfig.json ]] && echo '{ "BasePathOverride": "/jackett"}' > /config/Jackett/ServerConfig.json;
+          echo end;"
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: jackett        
+      containers:
+      - env:
+        - name: TZ
+          value: America/Sao_Paulo
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: linuxserver/jackett
+        name: jackett
+        ports:
+        - containerPort: 9117
+          name: webui
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: jackett
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads          
+        resources: {}
+      volumes: 
+      - hostPath: 
+          path: /home/fabio/.htpc 
+          type: Directory 
+        name: htpc-home

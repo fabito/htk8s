@@ -1,0 +1,8 @@
+namespace: htpc
+commonLabels:
+  app: htpc
+resources:
+- jackett.yaml
+- radarr.yaml
+- sonarr.yaml
+- transmission.yaml

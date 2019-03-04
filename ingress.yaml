@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: htpc
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /jackett
+        backend:
+          serviceName: jackett
+          servicePort: webui
+      - path: /sonarr
+        backend:
+          serviceName: sonarr
+          servicePort: webui
+      - path: /radarr
+        backend:
+          serviceName: radarr
+          servicePort: webui
+      - path: /transmission
+        backend:
+          serviceName: transmission
+          servicePort: webui
