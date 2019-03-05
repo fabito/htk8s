@@ -6,6 +6,10 @@ spec:
   rules:
   - http:
       paths:
+      - path: /
+        backend:
+          serviceName: emby
+          servicePort: webui
       - path: /jackett
         backend:
           serviceName: jackett

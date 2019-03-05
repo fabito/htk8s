@@ -11,7 +11,8 @@ resources:
 - radarr.yaml
 - sonarr.yaml
 - transmission.yaml
+- emby.yaml
 - ingress.yaml
 
-# patchesStrategicMerge:
-# - env.yaml
+patchesStrategicMerge:
+- volumes_patch.yaml

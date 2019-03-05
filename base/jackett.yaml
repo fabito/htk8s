@@ -63,9 +63,4 @@ spec:
         - mountPath: /downloads 
           name: htpc-home
           subPath: downloads          
-        resources: {}
-      volumes: 
-      - hostPath: 
-          path: /home/fabio/.htpc 
-          type: Directory 
-        name: htpc-home
+

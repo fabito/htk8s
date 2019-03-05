@@ -31,18 +31,34 @@ spec:
         # runAsUser: 1000
         # runAsGroup: 1000
         fsGroup: 1000
-      # initContainers:
-      # - name: setup-transmission
-      #   image: busybox
-      #   command: ["sh", "-c"]
-      #   args:
-      #     - "echo starting;
-      #       echo '{\"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
-      #       echo done;"
-      #   volumeMounts: 
-      #   - mountPath: /config 
-      #     name: htpc-home
-      #     subPath: transmission
+      initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config"]
+        volumeMounts:
+        - mountPath: /config 
+          name: htpc-home
+          subPath: transmission
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads
+        - mountPath: /watch
+          name: htpc-home
+          subPath: watch       
+      - name: setup-transmission
+        image: busybox
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000        
+        command: ["sh", "-c"]
+        args:
+          - "echo starting;
+            echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
+            echo done;"
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: transmission
       containers:    
       - name: transmission
         image: linuxserver/transmission
@@ -74,8 +90,4 @@ spec:
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-      volumes: 
-      - hostPath: 
-          path: /home/fabio/.htpc 
-          type: Directory 
-        name: htpc-home
+

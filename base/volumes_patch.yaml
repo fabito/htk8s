@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+spec:
+  template:
+    spec:
+      volumes: 
+      - hostPath: 
+          path: /htpc 
+          type: DirectoryOrCreate 
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+spec:
+  template:
+    spec:
+      volumes: 
+      - hostPath: 
+          path: /htpc 
+          type: DirectoryOrCreate 
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+spec:
+  template:
+    spec:
+      volumes: 
+      - hostPath: 
+          path: /htpc 
+          type: DirectoryOrCreate 
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jackett
+spec:
+  template:
+    spec:
+      volumes: 
+      - hostPath: 
+          path: /htpc 
+          type: DirectoryOrCreate 
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emby
+spec:
+  template:
+    spec:
+      volumes: 
+      - hostPath: 
+          path: /htpc 
+          type: DirectoryOrCreate 
+        name: htpc-home        

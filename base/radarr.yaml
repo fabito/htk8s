@@ -32,9 +32,22 @@ spec:
         # runAsGroup: 1000
         fsGroup: 1000
       initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /movies"]
+        volumeMounts:
+        - mountPath: /config 
+          name: htpc-home
+          subPath: radarr    
+        - mountPath: /movies 
+          name: htpc-home
+          subPath: media/movies      
       - name: config
         image: busybox
         command: ["sh", "-c"]
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000        
         args:
           - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/radarr</UrlBase></Config>'> /config/config.xml;echo end;"
         volumeMounts: 
@@ -64,9 +77,4 @@ spec:
         - mountPath: /downloads 
           name: htpc-home
           subPath: downloads        
-        resources: {}
-      volumes: 
-      - hostPath: 
-          path: /home/fabio/.htpc 
-          type: Directory 
-        name: htpc-home
+
