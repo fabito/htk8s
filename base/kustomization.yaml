@@ -10,6 +10,7 @@ resources:
 - jackett.yaml
 - radarr.yaml
 - sonarr.yaml
+- bazarr.yaml
 - transmission.yaml
 - emby.yaml
 - ingress.yaml

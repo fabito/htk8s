@@ -7,6 +7,7 @@ It uses [LinuxServers](https://www.linuxserver.io/our-images/) images to setup a
 
 * Sonarr
 * Radarr
+* Bazarr
 * Transmission
 * Jackett
 * Emby

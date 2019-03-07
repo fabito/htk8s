@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bazarr
+spec:
+  ports:
+  - port: 6767
+    protocol: TCP
+    targetPort: 6767
+    name: webui
+  selector:
+    run: bazarr
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: bazarr
+  name: bazarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: bazarr
+  template:
+    metadata:
+      labels:
+        run: bazarr
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000
+      # initContainers:
+      # - name: config
+      #   image: busybox
+      #   command: ["sh", "-c"]
+      #   args:
+      #     - "echo start;
+      #     [[ ! -f /config/bazarr/ServerConfig.json ]] && mkdir -p /config/bazarr/ &&  echo '{ \"BasePathOverride\": \"/bazarr\"}' > /config/bazarr/ServerConfig.json;
+      #     echo end;"
+      #   volumeMounts: 
+      #   - mountPath: /config 
+      #     name: htpc-home
+      #     subPath: bazarr        
+      containers:
+      - env:
+        - name: TZ
+          value: America/Sao_Paulo
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: linuxserver/bazarr
+        name: bazarr
+        ports:
+        - containerPort: 6767
+          name: webui
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: bazarr
+        - mountPath: /movies 
+          name: htpc-home
+          subPath: media/movies
+        - mountPath: /tv
+          name: htpc-home
+          subPath: media/tv
