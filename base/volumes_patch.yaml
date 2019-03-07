@@ -61,4 +61,17 @@ spec:
       - hostPath: 
           path: /htpc 
           type: DirectoryOrCreate 
-        name: htpc-home        
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazarr
+spec:
+  template:
+    spec:
+      volumes: 
+      - hostPath: 
+          path: /htpc 
+          type: DirectoryOrCreate 
+        name: htpc-home 
