@@ -17,3 +17,15 @@ resources:
 
 patchesStrategicMerge:
 - volumes_patch.yaml
+
+vars:
+  - name: SONARR
+    objref:
+      kind: Service
+      name: sonarr
+      apiVersion: v1
+  - name: RADARR
+    objref:
+      kind: Service
+      name: radarr
+      apiVersion: v1

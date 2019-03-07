@@ -31,18 +31,67 @@ spec:
         # runAsUser: 1000
         # runAsGroup: 1000
         fsGroup: 1000
-      # initContainers:
-      # - name: config
-      #   image: busybox
-      #   command: ["sh", "-c"]
-      #   args:
-      #     - "echo start;
-      #     [[ ! -f /config/bazarr/ServerConfig.json ]] && mkdir -p /config/bazarr/ &&  echo '{ \"BasePathOverride\": \"/bazarr\"}' > /config/bazarr/ServerConfig.json;
-      #     echo end;"
-      #   volumeMounts: 
-      #   - mountPath: /config 
-      #     name: htpc-home
-      #     subPath: bazarr        
+      initContainers:
+      - name: config
+        image: busybox
+        command: 
+        - "sh"
+        - "-c"
+        - |
+
+RADARR_API_KEY=cat /htpc/radarr/config.xml | grep -oPm1 "(?<=<ApiKey>)[^<]+"
+SONARR_API_KEY=cat /htpc/sonarr/config.xml | grep -oPm1 "(?<=<ApiKey>)[^<]+"
+
+cat <<'EOF' > /htpc/bazarr/config/config.ini
+[sonarr]
+apikey = ${SONARR_API_KEY}
+full_update = Daily
+ip = $(SONARR)
+only_monitored = False
+base_url = /$(SONARR)
+ssl = False
+port = 8989
+
+[radarr]
+apikey = ${RADARR_API_KEY}
+full_update = Daily
+ip = $(RADARR)
+only_monitored = False
+base_url = /$(RADARR)
+ssl = False
+port = 7878
+
+[general]
+movie_default_hi = False
+movie_default_language = []
+ip = 0.0.0.0
+use_scenename = True
+use_postprocessing = False
+enabled_providers = subscene,tvsubtitles
+auto_update = True
+port = 6767
+use_radarr = True
+base_url = /bazarr/
+page_size = 25
+minimum_score_movie = 70
+branch = master
+single_language = False
+use_sonarr = True
+serie_default_hi = False
+path_mappings_movie = [['/movies', '/movies'], ['', ''], ['', ''], ['', ''], ['', '']]
+serie_default_enabled = False
+movie_default_enabled = False
+serie_default_language = []
+path_mappings = [['/tv', '/tv'], ['', ''], ['', ''], ['', ''], ['', '']]
+postprocessing_cmd = 
+minimum_score = 90
+debug = False
+use_embedded_subs = True
+adaptive_searching = False
+EOF
+        volumeMounts: 
+        - mountPath: /htpc
+          name: htpc-home
       containers:
       - env:
         - name: TZ
