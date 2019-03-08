@@ -49,7 +49,7 @@ spec:
           runAsUser: 1000
           runAsGroup: 1000
         args:
-          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>'> /config/config.xml;echo end;"
+          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(SONARR)</UrlBase></Config>'> /config/config.xml;echo end;"
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home

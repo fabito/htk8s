@@ -14,11 +14,11 @@ spec:
         backend:
           serviceName: jackett
           servicePort: webui
-      - path: /$(SONARR)
+      - path: /sonarr
         backend:
           serviceName: sonarr
           servicePort: webui
-      - path: /$(RADARR)
+      - path: /radarr
         backend:
           serviceName: radarr
           servicePort: webui
