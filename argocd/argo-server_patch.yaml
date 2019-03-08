@@ -11,5 +11,7 @@ spec:
         - argocd-server
         - --staticassets
         - /shared/app
+        - --insecure
+        - --disable-auth
         - --basehref
-        - /argocd
+        - argocd
