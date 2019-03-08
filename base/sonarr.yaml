@@ -67,6 +67,22 @@ spec:
         ports:
         - containerPort: 8989
           name: webui
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 5
+          periodSeconds: 5
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home
