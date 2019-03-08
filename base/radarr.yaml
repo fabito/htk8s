@@ -70,13 +70,13 @@ spec:
         livenessProbe:
           exec:
             command:
-            - curl "http://localhost:7878/$(RADARR)/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 5
           periodSeconds: 5
         readinessProbe:
           exec:
             command:
-            - curl "http://localhost:7878/$(RADARR)/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 5
           periodSeconds: 5
         volumeMounts: 
