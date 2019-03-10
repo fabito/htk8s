@@ -74,4 +74,6 @@ spec:
       - hostPath: 
           path: /htpc 
           type: DirectoryOrCreate 
-        name: htpc-home 
+        name: htpc-home
+        # persistentVolumeClaim:
+        #   claimName: local-path-pvc
