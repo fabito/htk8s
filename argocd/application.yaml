@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: htpc
+spec:
+  project: default
+  
+  source:
+    repoURL: https://github.com/fabito/htk8s.git
+    targetRevision: HEAD
+    path: overlays/x86
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: htpc
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: true
