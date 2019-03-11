@@ -15,9 +15,9 @@ spec:
     namespace: htpc
 
   # Sync policy
-  # syncPolicy:
-  #   automated:
-  #     prune: false
+  syncPolicy:
+    automated:
+      prune: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -36,6 +36,6 @@ spec:
     namespace: argocd
 
   # Sync policy
-  # syncPolicy:
-  #   automated:
-  #     prune: false      
+  syncPolicy:
+    automated:
+      prune: false      
