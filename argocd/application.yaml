@@ -7,7 +7,7 @@ spec:
   
   source:
     repoURL: https://github.com/fabito/htk8s.git
-    targetRevision: add-argocd
+    targetRevision: master
     path: overlays/x86
 
   destination:
@@ -15,9 +15,9 @@ spec:
     namespace: htpc
 
   # Sync policy
-  syncPolicy:
-    automated:
-      prune: false
+  # syncPolicy:
+  #   automated:
+  #     prune: false
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -28,7 +28,7 @@ spec:
   
   source:
     repoURL: https://github.com/fabito/htk8s.git
-    targetRevision: add-argocd
+    targetRevision: master
     path: argocd
 
   destination:
@@ -36,6 +36,6 @@ spec:
     namespace: argocd
 
   # Sync policy
-  syncPolicy:
-    automated:
-      prune: false      
+  # syncPolicy:
+  #   automated:
+  #     prune: false      
