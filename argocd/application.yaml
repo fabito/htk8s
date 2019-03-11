@@ -7,7 +7,7 @@ spec:
   
   source:
     repoURL: https://github.com/fabito/htk8s.git
-    targetRevision: HEAD
+    targetRevision: add-argocd
     path: overlays/x86
 
   destination:
