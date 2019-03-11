@@ -32,6 +32,9 @@ spec:
         # runAsGroup: 1000
         fsGroup: 1000
       initContainers:
+      - name: wait-for-sonarr-and-radarr
+        image: busybox
+        command: ['sh', '-c', 'until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;']
       - name: config
         image: busybox
         command: 
