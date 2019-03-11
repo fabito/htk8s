@@ -3,16 +3,16 @@
 
 [k3s](https://k3s.io/) is a lightweight and easy to install Kubernetes distribution
 
-It uses [LinuxServers](https://www.linuxserver.io/our-images/) images to setup a HTPC 
+It uses [LinuxServers](https://www.linuxserver.io/our-images/) images to setup an HTPC 
 
-* Sonarr
-* Radarr
-* Bazarr
-* Transmission
-* Jackett
+* Sonarr for tv shows
+* Radarr for movies
+* Bazarr for subtitles
+* Transmission for torrents
+* Jackett 
 * Emby
 
-I uses a `hostPath` volume to store configuration files and media. It defaults to `/htpc`
+It uses a `hostPath` volume to store configuration and media files. It defaults to `/htpc`
 
 ### Requirements
 
@@ -25,14 +25,7 @@ I uses a `hostPath` volume to store configuration files and media. It defaults t
 
 Install k3s and verify
 
-Create the `htpc` namespace.
-
-```bash
-kubectl create -n htpc
-```
-
 Use Kustomize to create the resources:
-
 
 ```bash
 # for x86_64
@@ -45,4 +38,16 @@ kustomize build overlays/armhf | kubectl apply -f -
 ### Verifying the installation
 
 Once applied you should be 
+You should be able to reach each component:
 
+|App|URI
+|---|---
+|radarr|http://localhost/radarr
+|sonarr|http://localhost/sonarr
+|bazarr|http://localhost/bazarr
+|transmission|http://localhost/transmission
+|emby|http://localhost/
+
+Check the [ingress.yaml](base/ingress.yaml) for more details.
+
+Each module except for Emby is configured to respond on a custom basepath (most of this configuration is done by init containers).
