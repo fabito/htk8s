@@ -17,4 +17,4 @@ spec:
   # Sync policy
   syncPolicy:
     automated:
-      prune: true
+      prune: false
