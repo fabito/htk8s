@@ -106,13 +106,13 @@ spec:
         name: bazarr
         livenessProbe:
           httpGet:
-            path: /
+            path: /bazarr
             port: webui        
           initialDelaySeconds: 5
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: /
+            path: /bazarr
             port: webui        
           initialDelaySeconds: 5
           periodSeconds: 5        
