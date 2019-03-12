@@ -104,18 +104,18 @@ spec:
           value: "1000"
         image: linuxserver/bazarr
         name: bazarr
-        livenessProbe:
-          httpGet:
-            path: /bazarr
-            port: webui        
-          initialDelaySeconds: 120
-          periodSeconds: 15
-        readinessProbe:
-          httpGet:
-            path: /bazarr
-            port: webui        
-          initialDelaySeconds: 120
-          periodSeconds: 15 
+        # livenessProbe:
+        #   httpGet:
+        #     path: /bazarr
+        #     port: webui        
+        #   initialDelaySeconds: 200
+        #   periodSeconds: 15
+        # readinessProbe:
+        #   httpGet:
+        #     path: /bazarr
+        #     port: webui        
+        #   initialDelaySeconds: 200
+        #   periodSeconds: 15 
         ports:
         - containerPort: 6767
           name: webui

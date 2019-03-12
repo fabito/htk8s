@@ -137,22 +137,10 @@ spec:
         - name: PGID
           value: "1000"
         image: linuxserver/bazarr:amd64-latest
-        livenessProbe:
-          httpGet:
-            path: /bazarr
-            port: webui
-          initialDelaySeconds: 120
-          periodSeconds: 15
         name: bazarr
         ports:
         - containerPort: 6767
           name: webui
-        readinessProbe:
-          httpGet:
-            path: /bazarr
-            port: webui
-          initialDelaySeconds: 120
-          periodSeconds: 15
         volumeMounts:
         - mountPath: /config
           name: htpc-home
