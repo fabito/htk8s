@@ -200,7 +200,7 @@ spec:
         fsGroup: 1000
       volumes:
       - hostPath:
-          path: /htpc
+          path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
 ---
@@ -255,7 +255,7 @@ spec:
         fsGroup: 1000
       volumes:
       - hostPath:
-          path: /htpc
+          path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
 ---
@@ -317,7 +317,7 @@ spec:
         fsGroup: 1000
       volumes:
       - hostPath:
-          path: /htpc
+          path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
 ---
@@ -415,7 +415,7 @@ spec:
         fsGroup: 1000
       volumes:
       - hostPath:
-          path: /htpc
+          path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
 ---
@@ -513,7 +513,7 @@ spec:
         fsGroup: 1000
       volumes:
       - hostPath:
-          path: /htpc
+          path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
 ---
@@ -605,7 +605,7 @@ spec:
         fsGroup: 1000
       volumes:
       - hostPath:
-          path: /htpc
+          path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
 ---

@@ -85,6 +85,20 @@ Each module except for Emby is configured to respond on a custom basepath (check
 
 It uses [LinuxServers](https://www.linuxserver.io/our-images/) images.
 
-It uses a `hostPath` volume to store configuration and media files. It defaults to the `/htpc` directory
+It uses a `hostPath` volume to store configuration and media files. It defaults to the `/opt/htpc` directory
+
+```bash
+/opt/htpc
+├── bazarr
+├── downloads
+├── emby
+├── jackett
+├── media
+│   ├── movies
+│   └── tv
+├── radarr
+├── sonarr
+└── transmission
+```
 
 TODO

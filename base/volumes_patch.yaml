@@ -7,7 +7,7 @@ spec:
     spec:
       volumes: 
       - hostPath: 
-          path: /htpc 
+          path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
 ---
@@ -20,7 +20,7 @@ spec:
     spec:
       volumes: 
       - hostPath: 
-          path: /htpc 
+          path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
 ---
@@ -33,7 +33,7 @@ spec:
     spec:
       volumes: 
       - hostPath: 
-          path: /htpc 
+          path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
 ---
@@ -46,7 +46,7 @@ spec:
     spec:
       volumes: 
       - hostPath: 
-          path: /htpc 
+          path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
 ---
@@ -59,7 +59,7 @@ spec:
     spec:
       volumes: 
       - hostPath: 
-          path: /htpc 
+          path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
 ---
@@ -72,7 +72,7 @@ spec:
     spec:
       volumes: 
       - hostPath: 
-          path: /htpc 
+          path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
         # persistentVolumeClaim:
