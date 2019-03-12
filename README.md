@@ -23,6 +23,18 @@ kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_x86
 kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_armhf.yaml
 ```
 
+### The Gitops way
+
+This alternate manifest will install [Argo CD](https://github.com/argoproj/argo-cd) along with an [Argo CD application](argocd/application.yaml).
+
+```bash
+# x86_64 only
+kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_argocd.yaml
+```
+
+Once started, Argo CD will auto install the kustomize overlay `overlays/x86`. You can access the Argo CD ui at: https://localhost/argocd.
+
+
 ### Verifying the installation
 
 All resources are created in the `htpc` namespace. So if you run:
@@ -81,7 +93,7 @@ Check the [ingress.yaml](base/ingress.yaml) for more details.
 
 Each module except for Emby is configured to respond on a custom basepath (check the init containers logic for more details).
 
-## How it works
+## How it works (WIP)
 
 It uses [LinuxServers](https://www.linuxserver.io/our-images/) images.
 
@@ -100,5 +112,3 @@ It uses a `hostPath` volume to store configuration and media files. It defaults 
 ├── sonarr
 └── transmission
 ```
-
-TODO
