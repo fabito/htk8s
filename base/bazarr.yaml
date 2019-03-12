@@ -108,14 +108,14 @@ spec:
           httpGet:
             path: /bazarr
             port: webui        
-          initialDelaySeconds: 30
-          periodSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 15
         readinessProbe:
           httpGet:
             path: /bazarr
             port: webui        
-          initialDelaySeconds: 30
-          periodSeconds: 10 
+          initialDelaySeconds: 60
+          periodSeconds: 15 
         ports:
         - containerPort: 6767
           name: webui
