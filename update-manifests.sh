@@ -8,3 +8,6 @@ kustomize build "${SRCROOT}/overlays/x86" >> "${SRCROOT}/install_x86_64.yaml"
 
 echo "${AUTOGENMSG}" > "${SRCROOT}/install_armhf.yaml"
 kustomize build "${SRCROOT}/overlays/armhf" >> "${SRCROOT}/install_armhf.yaml"
+
+echo "${AUTOGENMSG}" > "${SRCROOT}/install_argocd.yaml"
+kustomize build "${SRCROOT}/argocd" >> "${SRCROOT}/install_argocd.yaml"
