@@ -357,8 +357,8 @@ spec:
             - -c
             - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
               </config/config.xml)"
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
         name: radarr
         ports:
         - containerPort: 7878
@@ -370,8 +370,8 @@ spec:
             - -c
             - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne
               '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
         volumeMounts:
         - mountPath: /config
           name: htpc-home
@@ -455,8 +455,8 @@ spec:
             - -c
             - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
               </config/config.xml)"
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
         name: sonarr
         ports:
         - containerPort: 8989
@@ -468,8 +468,8 @@ spec:
             - -c
             - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne
               '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
         volumeMounts:
         - mountPath: /config
           name: htpc-home
