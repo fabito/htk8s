@@ -19,21 +19,20 @@ It includes the following applications:
 # for x86_64
 kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_x86_64.yaml
 
-#for raspberry pi (ARM)
+# for raspberry pi (ARM)
 kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_armhf.yaml
 ```
 
 ### The Gitops way
-
-This alternate manifest will install [Argo CD](https://github.com/argoproj/argo-cd) along with an [Argo CD application](argocd/application.yaml).
 
 ```bash
 # x86_64 only
 kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_argocd.yaml
 ```
 
-Once started, Argo CD will auto install the kustomize overlay `overlays/x86`. You can access the Argo CD ui at: https://localhost/argocd.
+This alternate manifest will install [Argo CD](https://github.com/argoproj/argo-cd) along with the [htpc application](argocd/application.yaml). Then it will monitor this repo for changes and apply them to the cluster accordingly (more specifically the `overlays/x86`overlay).
 
+You can access the Argo CD ui at: https://localhost/argocd.
 
 ### Verifying the installation
 
