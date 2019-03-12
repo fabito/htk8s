@@ -4,19 +4,25 @@ before_install:
   - curl -s -L https://github.com/kubernetes-sigs/kustomize/releases/latest | egrep -o '/kubernetes-sigs/kustomize/releases/download/v[0-9\.]*/kustomize.*_linux_amd64' | wget --base=http://github.com/ -i - -O kustomize
   - chmod u+x kustomize
   - sudo mv kustomize /usr/local/bin
+  - kustomize version
 
-script: kustomize version
+jobs:
+  include:
+    - stage: Generate x86_64 installation yaml
+      script: kustomize build overlays/x86 -o install_x86_64.yaml
+    - stage: Generate armhf installation yaml
+      script: kustomize build overlays/armhf -o install_armhf.yaml
+    # - stage: GitHub Release
+    #   script: echo "Deploying to GitHub releases ..."
+    #   deploy:
+    #     provider: releases
+    #     api_key: $GITHUB_OAUTH_TOKEN
+    #     skip_cleanup: true
+    #     on:
+    #       tags: true
 
-# jobs:
-#   include:
-#     - script: echo "Running unit tests (1)"
-#     - script: echo "Running unit tests (2)"
-#     - stage: GitHub Release
-#       script: echo "Deploying to GitHub releases ..."
-#       deploy:
-#         provider: releases
-#         api_key: $GITHUB_OAUTH_TOKEN
-#         skip_cleanup: true
-#         on:
-#           tags: true
-
+after_success:
+  - .travis/push.sh
+# env:
+#   global:
+#     secure: hZJlqgOzA2zIUJSWIka0PylqNaTkfHq+kS48RrHmocrK0vLyCW7ECWrzez2f2RVdTNzPi0b+yJq2uCbFfWjImZqg+XY1I75/CVVdSYMk7PJkYZ/iBDixMYY8CAkRRd5yZft9uZAdZzR4KLCPN18n7qfISv/M9VA8989NKcVyiEU=
