@@ -25,8 +25,7 @@ kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_arm
 
 ### Verifying the installation
 
-Once applied you should be 
-You should be able to reach each component:
+Once applied you should be able to reach each component ui using the links below. Don't forget to replace `localhost` by the IP or the server name running k3s.
 
 |App|URI
 |---|---
