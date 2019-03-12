@@ -12,17 +12,3 @@ jobs:
       script: kustomize build overlays/x86 -o install_x86_64.yaml
     - stage: Generate armhf installation yaml
       script: kustomize build overlays/armhf -o install_armhf.yaml
-    # - stage: GitHub Release
-    #   script: echo "Deploying to GitHub releases ..."
-    #   deploy:
-    #     provider: releases
-    #     api_key: $GITHUB_OAUTH_TOKEN
-    #     skip_cleanup: true
-    #     on:
-    #       tags: true
-
-after_success:
-  - .travis/push.sh
-# env:
-#   global:
-#     secure: hZJlqgOzA2zIUJSWIka0PylqNaTkfHq+kS48RrHmocrK0vLyCW7ECWrzez2f2RVdTNzPi0b+yJq2uCbFfWjImZqg+XY1I75/CVVdSYMk7PJkYZ/iBDixMYY8CAkRRd5yZft9uZAdZzR4KLCPN18n7qfISv/M9VA8989NKcVyiEU=

@@ -1,38 +1,26 @@
 
 # HTPC powered by k3s
 
-[k3s](https://k3s.io/) is a lightweight and easy to install Kubernetes distribution
+This is my current HTPC setup. It runs on [k3s](https://k3s.io/) - a lightweight and easy to install Kubernetes distribution.
+It includes the following applications:
 
-It uses [LinuxServers](https://www.linuxserver.io/our-images/) images to setup an HTPC 
-
-* Sonarr for tv shows
-* Radarr for movies
-* Bazarr for subtitles
+* [Sonarr](https://sonarr.tv/) for tv shows
+* [Radarr](https://radarr.video/) for movies
+* [Bazarr](https://github.com/morpheus65535/bazarr) for subtitles
 * Transmission for torrents
-* Jackett 
-* Emby
+* [Jackett](https://github.com/Jackett/Jackett) 
+* [Emby](https://emby.media/)
 
-It uses a `hostPath` volume to store configuration and media files. It defaults to `/htpc`
+## Getting Started
 
-### Requirements
-
-* k3s
-* kubectl
-* kustomize
-
-
-### Installation instructions
-
-Install k3s and verify
-
-Use Kustomize to create the resources:
+### Quickstart
 
 ```bash
 # for x86_64
-kustomize build overlays/x86 | kubectl apply -f -
+kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_x86_64.yaml
 
 #for raspberry pi (ARM)
-kustomize build overlays/armhf | kubectl apply -f -
+kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_armhf.yaml
 ```
 
 ### Verifying the installation
@@ -51,3 +39,11 @@ You should be able to reach each component:
 Check the [ingress.yaml](base/ingress.yaml) for more details.
 
 Each module except for Emby is configured to respond on a custom basepath (most of this configuration is done by init containers).
+
+## How it works
+
+It uses [LinuxServers](https://www.linuxserver.io/our-images/) images.
+
+It uses a `hostPath` volume to store configuration and media files. It defaults to the `/htpc` directory
+
+TODO
