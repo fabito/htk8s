@@ -1,8 +1,7 @@
 language: minimal
 
 before_install:
-  - curl -s https://github.com/kubernetes-sigs/kustomize/releases/download/v2.0.3/kustomize_2.0.3_linux_amd64
-  - mv kustomize_2.0.3_linux_amd64 kustomize
+  - curl -s -L https://github.com/kubernetes-sigs/kustomize/releases/latest | egrep -o '/kubernetes-sigs/kustomize/releases/download/v[0-9\.]*/kustomize.*_linux_amd64' | wget --base=http://github.com/ -i - -O kustomize
   - chmod u+x kustomize
 
 script: kustomize version
@@ -19,3 +18,4 @@ script: kustomize version
 #         skip_cleanup: true
 #         on:
 #           tags: true
+
