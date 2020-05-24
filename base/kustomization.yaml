@@ -18,6 +18,7 @@ resources:
 
 patchesStrategicMerge:
 - volumes_patch.yaml
+- env_variables_patch.yaml
 
 vars:
   - name: SONARR

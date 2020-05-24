@@ -32,7 +32,7 @@ spec:
       containers:
       - env:
         - name: TZ
-          value: America/Sao_Paulo
+          value: Pacific/Auckland
         - name: UID
           value: "1000"
         - name: GID
