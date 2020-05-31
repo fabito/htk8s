@@ -85,6 +85,7 @@ You should also be able to reach each component's ui using the links below. Don'
 |radarr|http://localhost/radarr
 |sonarr|http://localhost/sonarr
 |bazarr|http://localhost/bazarr
+|jacket|http://localhost/jackett
 |transmission|http://localhost/transmission
 |emby|http://localhost/
 
