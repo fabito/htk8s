@@ -1,6 +1,8 @@
 
 # HTPC powered by k3s
 
+![htk8s diagrams](https://docs.google.com/drawings/d/e/2PACX-1vSsQfsfgHiHi0l-1w6pZhCYX-xz2xJNVwMrnKclkqYdEd6dIGJY9soY2lgtm1gyOnNSTYRbYkqvYCWU/pub?w=1373&amp;h=612)
+
 This is my current HTPC setup. It runs on [k3s](https://k3s.io/) - a lightweight and easy to install Kubernetes distribution.
 It includes the following applications:
 
