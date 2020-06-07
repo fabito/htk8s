@@ -13,6 +13,8 @@ It includes the following applications:
 * [Jackett](https://github.com/Jackett/Jackett) 
 * [Emby](https://emby.media/)
 
+Applications state (settings / db) and media files are stored in a shared volume of type `hostPath`. It does not use PVC and currently only works if the whole `htpc` namespace is deployed in the same node.
+
 ## Getting Started
 
 ### Quickstart
