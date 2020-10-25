@@ -73,6 +73,12 @@ spec:
         - containerPort: 8080
           name: webui
           protocol: TCP
+        - containerPort: 6881
+          name: torrent-tcp
+          protocol: TCP
+        - containerPort: 6881
+          name: torrent-udp
+          protocol: UDP
         resources: {}
         volumeMounts:
         - mountPath: /config
