@@ -36,35 +36,35 @@ spec:
         image: busybox
         command: ["sh", "-c", "chown -R 1000:1000 /config"]
         volumeMounts:
-        - mountPath: /config 
+        - mountPath: /config
           name: htpc-home
           subPath: transmission
-        - mountPath: /downloads 
+        - mountPath: /downloads
           name: htpc-home
           subPath: downloads
         - mountPath: /watch
           name: htpc-home
-          subPath: watch       
+          subPath: watch
       - name: setup-transmission
         image: busybox
         securityContext:
           runAsUser: 1000
-          runAsGroup: 1000        
+          runAsGroup: 1000
         command: ["sh", "-c"]
         args:
           - "echo starting;
             echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
             echo done;"
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: transmission
-      containers:    
+      containers:
       - name: transmission
         image: linuxserver/transmission
         env:
         - name: TZ
-          value: Pacific/Auckland
+          value: Australia/Perth
         - name: PUID
           value: "1000"
         - name: PGID
@@ -80,14 +80,13 @@ spec:
           name: torrent-udp
           protocol: UDP
         resources: {}
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: transmission
-        - mountPath: /downloads 
+        - mountPath: /downloads
           name: htpc-home
           subPath: downloads
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-

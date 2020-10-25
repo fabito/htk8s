@@ -39,14 +39,14 @@ spec:
           - "echo start;
           [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/ &&  echo '{ \"BasePathOverride\": \"/jackett\"}' > /config/Jackett/ServerConfig.json;
           echo end;"
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
-          subPath: jackett        
+          subPath: jackett
       containers:
       - env:
         - name: TZ
-          value: Pacific/Auckland
+          value: Australia/Perth
         - name: PUID
           value: "1000"
         - name: PGID
@@ -56,11 +56,10 @@ spec:
         ports:
         - containerPort: 9117
           name: webui
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: jackett
-        - mountPath: /downloads 
+        - mountPath: /downloads
           name: htpc-home
-          subPath: downloads          
-
+          subPath: downloads

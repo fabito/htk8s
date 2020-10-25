@@ -5,8 +5,8 @@ metadata:
 spec:
   template:
     spec:
-      containers: 
-      - name: transmission 
+      containers:
+      - name: transmission
         env:
         - name: TZ
-          value: Pacific/Auckland
+          value: Australia/Perth

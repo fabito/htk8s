@@ -64,7 +64,7 @@ spec:
         image: linuxserver/qbittorrent
         env:
         - name: TZ
-          value: Pacific/Auckland
+          value: Australia/Perth
         - name: PUID
           value: "1000"
         - name: PGID

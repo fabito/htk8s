@@ -32,7 +32,7 @@ spec:
       containers:
       - env:
         - name: TZ
-          value: Pacific/Auckland
+          value: Australia/Perth
         - name: UID
           value: "1000"
         - name: GID
@@ -46,13 +46,13 @@ spec:
         - containerPort: 8920
           name: webui-ssl
           protocol: TCP
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: emby
-        - mountPath: /tv 
+        - mountPath: /tv
           name: htpc-home
-          subPath: media/tv  
-        - mountPath: /movies 
+          subPath: media/tv
+        - mountPath: /movies
           name: htpc-home
-          subPath: media/movies     
+          subPath: media/movies

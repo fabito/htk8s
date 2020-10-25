@@ -15,6 +15,7 @@ resources:
 - transmission.yaml
 - emby.yaml
 - ingress.yaml
+- qbittorrent.yaml
 
 patchesStrategicMerge:
 - volumes_patch.yaml

@@ -1,14 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: qbittorrent
+spec:
+  template:
+    spec:
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: transmission
 spec:
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
         name: htpc-home
 ---
 apiVersion: apps/v1
@@ -18,10 +31,10 @@ metadata:
 spec:
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
         name: htpc-home
 ---
 apiVersion: apps/v1
@@ -31,10 +44,10 @@ metadata:
 spec:
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
         name: htpc-home
 ---
 apiVersion: apps/v1
@@ -44,10 +57,10 @@ metadata:
 spec:
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
         name: htpc-home
 ---
 apiVersion: apps/v1
@@ -57,10 +70,10 @@ metadata:
 spec:
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
         name: htpc-home
 ---
 apiVersion: apps/v1
@@ -70,10 +83,10 @@ metadata:
 spec:
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
         name: htpc-home
         # persistentVolumeClaim:
         #   claimName: local-path-pvc

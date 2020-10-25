@@ -37,7 +37,7 @@ spec:
         command: ['sh', '-c', 'until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;']
       - name: config
         image: busybox
-        command: 
+        command:
         - "sh"
         - "-c"
         - |
@@ -85,19 +85,19 @@ spec:
           movie_default_enabled = False
           serie_default_language = []
           path_mappings = [['/tv', '/tv'], ['', ''], ['', ''], ['', ''], ['', '']]
-          postprocessing_cmd = 
+          postprocessing_cmd =
           minimum_score = 90
           debug = False
           use_embedded_subs = True
           adaptive_searching = False
           EOF
-        volumeMounts: 
+        volumeMounts:
         - mountPath: /htpc
           name: htpc-home
       containers:
       - env:
         - name: TZ
-          value: Pacific/Auckland
+          value: Australia/Perth
         - name: PUID
           value: "1000"
         - name: PGID
@@ -107,23 +107,23 @@ spec:
         # livenessProbe:
         #   httpGet:
         #     path: /bazarr
-        #     port: webui        
+        #     port: webui
         #   initialDelaySeconds: 200
         #   periodSeconds: 15
         # readinessProbe:
         #   httpGet:
         #     path: /bazarr
-        #     port: webui        
+        #     port: webui
         #   initialDelaySeconds: 200
-        #   periodSeconds: 15 
+        #   periodSeconds: 15
         ports:
         - containerPort: 6767
           name: webui
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: bazarr
-        - mountPath: /movies 
+        - mountPath: /movies
           name: htpc-home
           subPath: media/movies
         - mountPath: /tv
