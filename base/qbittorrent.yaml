@@ -61,7 +61,7 @@ spec:
           subPath: qbittorrent
       containers:
       - name: qbittorrent
-        image: linuxserver/qbittorrent
+        image: linuxserver/qbittorrent:14.2.5.99202004250119-7015-2c65b79ubuntu18.04.1-ls93
         env:
         - name: TZ
           value: Australia/Perth
