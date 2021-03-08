@@ -1,3 +1,4 @@
+![test](https://github.com/fabito/htk8s/workflows/test/badge.svg)
 
 # HTPC powered by k3s
 
