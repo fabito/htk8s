@@ -6,7 +6,11 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      # - path: /
+      #   backend:
+      #     serviceName: jellyfin
+      #     servicePort: http-webui
+      - path: /jellyfin
         backend:
           serviceName: jellyfin
           servicePort: http-webui

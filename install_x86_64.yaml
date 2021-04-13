@@ -28,23 +28,6 @@ kind: Service
 metadata:
   labels:
     app: htpc
-  name: emby
-  namespace: htpc
-spec:
-  ports:
-  - name: webui
-    port: 8096
-    protocol: TCP
-    targetPort: 8096
-  selector:
-    app: htpc
-    run: emby
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: htpc
   name: jackett
   namespace: htpc
 spec:
@@ -72,6 +55,7 @@ spec:
     targetPort: 8096
   selector:
     app: htpc
+    run: jellyfin
 ---
 apiVersion: v1
 kind: Service
@@ -99,7 +83,7 @@ metadata:
   namespace: htpc
 spec:
   ports:
-  - name: webui
+  - name: http-webui
     port: 8989
     protocol: TCP
     targetPort: 8989
@@ -213,61 +197,6 @@ kind: Deployment
 metadata:
   labels:
     app: htpc
-    run: emby
-  name: emby
-  namespace: htpc
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: htpc
-      run: emby
-  template:
-    metadata:
-      labels:
-        app: htpc
-        run: emby
-    spec:
-      containers:
-      - env:
-        - name: TZ
-          value: Pacific/Auckland
-        - name: UID
-          value: "1000"
-        - name: GID
-          value: "1000"
-        image: emby/embyserver:4.6.0.30
-        name: emby
-        ports:
-        - containerPort: 8096
-          name: webui
-          protocol: TCP
-        - containerPort: 8920
-          name: webui-ssl
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: emby
-        - mountPath: /tv
-          name: htpc-home
-          subPath: media/tv
-        - mountPath: /movies
-          name: htpc-home
-          subPath: media/movies
-      securityContext:
-        fsGroup: 1000
-      volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: htpc
     run: jackett
   name: jackett
   namespace: htpc
@@ -336,10 +265,12 @@ spec:
   selector:
     matchLabels:
       app: htpc
+      run: jellyfin
   template:
     metadata:
       labels:
         app: htpc
+        run: jellyfin
     spec:
       containers:
       - env:
@@ -656,13 +587,13 @@ spec:
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-      - args:
-        - 'echo starting; echo ''{"download-dir": "/downloads", "rpc-whitelist-enabled":
-          false, "rpc-host-whitelist-enabled": false}'' > /config/settings.json; echo
-          done;'
-        command:
+      - command:
         - sh
         - -c
+        - |
+          echo Saving settings.json
+          echo '{"download-dir": "/downloads", "rpc-whitelist-enabled": false, "rpc-host-whitelist-enabled": false}' > /config/settings.json;
+          echo settings.json successfully saved
         image: busybox
         name: setup-transmission
         securityContext:
@@ -694,7 +625,7 @@ spec:
       - backend:
           serviceName: jellyfin
           servicePort: http-webui
-        path: /
+        path: /jellyfin
       - backend:
           serviceName: jackett
           servicePort: http-webui

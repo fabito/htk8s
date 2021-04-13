@@ -50,11 +50,13 @@ spec:
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000        
-        command: ["sh", "-c"]
-        args:
-          - "echo starting;
-            echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
-            echo done;"
+        command: 
+        - sh
+        - -c
+        - |
+          echo Saving settings.json
+          echo '{"download-dir": "/downloads", "rpc-whitelist-enabled": false, "rpc-host-whitelist-enabled": false}' > /config/settings.json;
+          echo settings.json successfully saved
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home

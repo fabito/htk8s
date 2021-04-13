@@ -13,7 +13,7 @@ resources:
 - sonarr.yaml
 - bazarr.yaml
 - transmission.yaml
-- emby.yaml
+# - emby.yaml
 - jellyfin.yaml
 - ingress.yaml
 
