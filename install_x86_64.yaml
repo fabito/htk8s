@@ -15,7 +15,7 @@ metadata:
   namespace: htpc
 spec:
   ports:
-  - name: webui
+  - name: http-webui
     port: 6767
     protocol: TCP
     targetPort: 6767
@@ -49,7 +49,7 @@ metadata:
   namespace: htpc
 spec:
   ports:
-  - name: webui
+  - name: http-webui
     port: 9117
     protocol: TCP
     targetPort: 9117
@@ -62,11 +62,27 @@ kind: Service
 metadata:
   labels:
     app: htpc
+  name: jellyfin
+  namespace: htpc
+spec:
+  ports:
+  - name: http-webui
+    port: 8096
+    protocol: TCP
+    targetPort: 8096
+  selector:
+    app: htpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htpc
   name: radarr
   namespace: htpc
 spec:
   ports:
-  - name: webui
+  - name: http-webui
     port: 7878
     protocol: TCP
     targetPort: 7878
@@ -100,7 +116,7 @@ metadata:
   namespace: htpc
 spec:
   ports:
-  - name: webui
+  - name: http-webui
     port: 9091
     protocol: TCP
     targetPort: 9091
@@ -303,6 +319,73 @@ spec:
           subPath: jackett
       securityContext:
         fsGroup: 1000
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htpc
+  name: jellyfin
+  namespace: htpc
+spec:
+  selector:
+    matchLabels:
+      app: htpc
+  template:
+    metadata:
+      labels:
+        app: htpc
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: linuxserver/jellyfin:version-10.7.2-1
+        imagePullPolicy: IfNotPresent
+        name: jellyfin
+        ports:
+        - containerPort: 8096
+          protocol: TCP
+        - containerPort: 7359
+          protocol: UDP
+        - containerPort: 1900
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: jellyfin
+        - mountPath: /data/tv
+          name: htpc-home
+          readOnly: true
+          subPath: media/tv
+        - mountPath: /data/movies
+          name: htpc-home
+          readOnly: true
+          subPath: media/movies
       volumes:
       - hostPath:
           path: /opt/htpc
@@ -609,26 +692,26 @@ spec:
   - http:
       paths:
       - backend:
-          serviceName: emby
-          servicePort: webui
+          serviceName: jellyfin
+          servicePort: http-webui
         path: /
       - backend:
           serviceName: jackett
-          servicePort: webui
+          servicePort: http-webui
         path: /jackett
       - backend:
           serviceName: sonarr
-          servicePort: webui
+          servicePort: http-webui
         path: /sonarr
       - backend:
           serviceName: radarr
-          servicePort: webui
+          servicePort: http-webui
         path: /radarr
       - backend:
           serviceName: bazarr
-          servicePort: webui
+          servicePort: http-webui
         path: /bazarr
       - backend:
           serviceName: transmission
-          servicePort: webui
+          servicePort: http-webui
         path: /transmission
