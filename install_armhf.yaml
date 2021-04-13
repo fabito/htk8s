@@ -563,7 +563,6 @@ spec:
         - containerPort: 51413
           name: torrent-udp
           protocol: UDP
-        resources: {}
         volumeMounts:
         - mountPath: /config
           name: htpc-home

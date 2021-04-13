@@ -7,7 +7,7 @@ spec:
   - port: 8096
     protocol: TCP
     targetPort: 8096
-    name: webui
+    name: http-webui
   selector:
     run: emby
 ---
@@ -55,4 +55,4 @@ spec:
           subPath: media/tv  
         - mountPath: /movies 
           name: htpc-home
-          subPath: media/movies     
+          subPath: media/movies
