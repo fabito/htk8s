@@ -364,7 +364,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: linuxserver/jellyfin
+        image: linuxserver/jellyfin:arm32v7-latest
         imagePullPolicy: IfNotPresent
         name: jellyfin
         ports:
