@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jellyfin
+  name: jellyfin
+spec:
+  ports:
+  - name: http-webui
+    port: 8096
+    protocol: TCP
+    targetPort: 8096
+  selector:
+    app: jellyfin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: linuxserver/jellyfin
+        imagePullPolicy: IfNotPresent
+        name: jellyfin
+        ports:
+        - containerPort: 8096
+          protocol: TCP
+        - containerPort: 7359
+          protocol: UDP
+        - containerPort: 1900
+          protocol: UDP
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: jellyfin
+        - mountPath: /data/tv 
+          name: htpc-home
+          subPath: media/tv
+          readOnly: True
+        - mountPath: /data/movies 
+          name: htpc-home
+          readOnly: True
+          subPath: media/movies

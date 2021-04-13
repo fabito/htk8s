@@ -7,7 +7,7 @@ spec:
   - port: 9091
     protocol: TCP
     targetPort: 9091
-    name: webui
+    name: http-webui
   selector:
     run: transmission
 ---

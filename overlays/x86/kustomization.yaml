@@ -17,3 +17,5 @@ images:
     newTag: 3.00-r2-ls80
   - name: emby/embyserver
     newTag: "4.6.0.30"
+  - name: linuxserver/jellyfin
+    newTag: "version-10.7.2-1"

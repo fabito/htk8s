@@ -7,7 +7,7 @@ spec:
   - port: 7878
     protocol: TCP
     targetPort: 7878
-    name: webui
+    name: http-webui
   selector:
     run: radarr
 ---

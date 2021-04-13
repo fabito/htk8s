@@ -7,7 +7,7 @@ spec:
   - port: 9117
     protocol: TCP
     targetPort: 9117
-    name: webui
+    name: http-webui
   selector:
     run: jackett
 ---
