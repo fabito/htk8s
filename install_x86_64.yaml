@@ -154,10 +154,9 @@ spec:
       initContainers:
       - command:
         - sh
-        - -ex
         - -c
-        - "until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr
-          &> /dev/null;\ndo \n  echo waiting for sonarr and radarr;\n  sleep 2;\ndone;\n"
+        - until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr
+          &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;
         image: busybox
         name: wait-for-sonarr-and-radarr
       - command:
@@ -289,16 +288,13 @@ spec:
           name: htpc-home
           subPath: downloads
       initContainers:
-      - command:
+      - args:
+        - 'echo start; [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/
+          &&  echo ''{ "BasePathOverride": "/jackett"}'' > /config/Jackett/ServerConfig.json;
+          echo end;'
+        command:
         - sh
-        - -ex
         - -c
-        - |
-          echo "Starting Jacket configuration"
-          [[ ! -f /config/Jackett/ServerConfig.json ]] && \
-          mkdir -p /config/Jackett/ && \
-          echo '{ \"BasePathOverride\": \"/jackett\"}' > /config/Jackett/ServerConfig.json;
-          echo "Finished Jacket configuration"
         image: busybox
         name: config
         volumeMounts:
