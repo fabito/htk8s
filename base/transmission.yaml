@@ -45,20 +45,22 @@ spec:
         - mountPath: /watch
           name: htpc-home
           subPath: watch       
-      - name: setup-transmission
-        image: busybox
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000        
-        command: ["sh", "-c"]
-        args:
-          - "echo starting;
-            echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json;
-            echo done;"
-        volumeMounts: 
-        - mountPath: /config 
-          name: htpc-home
-          subPath: transmission
+      # - name: setup-transmission
+      #   image: busybox
+      #   securityContext:
+      #     runAsUser: 1000
+      #     runAsGroup: 1000        
+      #   command: 
+      #   - sh
+      #   - -c
+      #   - |
+      #     echo Saving settings.json
+      #     echo '{"download-dir": "/downloads", "rpc-whitelist-enabled": false, "rpc-host-whitelist-enabled": false}' > /config/settings.json;
+      #     echo settings.json successfully saved
+      #   volumeMounts: 
+      #   - mountPath: /config 
+      #     name: htpc-home
+      #     subPath: transmission
       containers:    
       - name: transmission
         image: linuxserver/transmission
@@ -69,6 +71,10 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: WHITELIST
+          value: ""
+        - name: HOST_WHITELIST
+          value: ""
         ports:
         - containerPort: 9091
           name: webui
