@@ -12,6 +12,17 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: applications.argoproj.io
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.sync.status
+    name: Sync Status
+    type: string
+  - JSONPath: .status.health.status
+    name: Health Status
+    type: string
+  - JSONPath: .status.sync.revision
+    name: Revision
+    priority: 10
+    type: string
   group: argoproj.io
   names:
     kind: Application
@@ -22,6 +33,7 @@ spec:
     - apps
     singular: application
   scope: Namespaced
+  subresources: {}
   validation:
     openAPIV3Schema:
       description: Application is a definition of Application resource.
@@ -41,6 +53,18 @@ spec:
         operation:
           description: Operation contains requested operation parameters.
           properties:
+            info:
+              items:
+                properties:
+                  name:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - name
+                - value
+                type: object
+              type: array
             initiatedBy:
               description: OperationInitiator holds information about the operation
                 initiator
@@ -52,6 +76,32 @@ spec:
                 username:
                   description: Name of a user who started operation.
                   type: string
+              type: object
+            retry:
+              description: Retry controls failed sync retry behavior
+              properties:
+                backoff:
+                  description: Backoff is a backoff strategy
+                  properties:
+                    duration:
+                      description: Duration is the amount to back off. Default unit
+                        is seconds, but could also be a duration (e.g. "2m", "1h")
+                      type: string
+                    factor:
+                      description: Factor is a factor to multiply the base duration
+                        after each failed retry
+                      format: int64
+                      type: integer
+                    maxDuration:
+                      description: MaxDuration is the maximum amount of time allowed
+                        for the backoff strategy
+                      type: string
+                  type: object
+                limit:
+                  description: Limit is the maximum number of attempts when retrying
+                    a container
+                  format: int64
+                  type: integer
               type: object
             sync:
               description: SyncOperation contains sync operation details.
@@ -81,6 +131,8 @@ spec:
                         type: string
                       name:
                         type: string
+                      namespace:
+                        type: string
                     required:
                     - kind
                     - name
@@ -101,6 +153,8 @@ spec:
                     directory:
                       description: Directory holds path/directory specific options
                       properties:
+                        exclude:
+                          type: string
                         jsonnet:
                           description: ApplicationSourceJsonnet holds jsonnet specific
                             options
@@ -120,6 +174,11 @@ spec:
                                 - name
                                 - value
                                 type: object
+                              type: array
+                            libs:
+                              description: Additional library search dirs
+                              items:
+                                type: string
                               type: array
                             tlas:
                               description: TLAS is a list of Jsonnet Top-level Arguments
@@ -190,6 +249,10 @@ spec:
                           description: Values is Helm values, typically defined as
                             a block
                           type: string
+                        version:
+                          description: Version is the Helm version to use for templating
+                            with
+                          type: string
                       type: object
                     ksonnet:
                       description: Ksonnet holds ksonnet specific options
@@ -219,6 +282,12 @@ spec:
                     kustomize:
                       description: Kustomize holds kustomize specific options
                       properties:
+                        commonAnnotations:
+                          additionalProperties:
+                            type: string
+                          description: CommonAnnotations adds additional kustomize
+                            commonAnnotations
+                          type: object
                         commonLabels:
                           additionalProperties:
                             type: string
@@ -286,7 +355,7 @@ spec:
                   description: SyncStrategy describes how to perform the sync
                   properties:
                     apply:
-                      description: Apply wil perform a `kubectl apply` to perform
+                      description: Apply will perform a `kubectl apply` to perform
                         the sync.
                       properties:
                         force:
@@ -319,6 +388,10 @@ spec:
               description: Destination overrides the kubernetes server and namespace
                 defined in the environment ksonnet app.yaml
               properties:
+                name:
+                  description: Name of the destination cluster which can be used instead
+                    of server (url) field
+                  type: string
                 namespace:
                   description: Namespace overrides the environment namespace value
                     in the ksonnet app.yaml
@@ -389,6 +462,8 @@ spec:
                 directory:
                   description: Directory holds path/directory specific options
                   properties:
+                    exclude:
+                      type: string
                     jsonnet:
                       description: ApplicationSourceJsonnet holds jsonnet specific
                         options
@@ -408,6 +483,11 @@ spec:
                             - name
                             - value
                             type: object
+                          type: array
+                        libs:
+                          description: Additional library search dirs
+                          items:
+                            type: string
                           type: array
                         tlas:
                           description: TLAS is a list of Jsonnet Top-level Arguments
@@ -477,6 +557,10 @@ spec:
                     values:
                       description: Values is Helm values, typically defined as a block
                       type: string
+                    version:
+                      description: Version is the Helm version to use for templating
+                        with
+                      type: string
                   type: object
                 ksonnet:
                   description: Ksonnet holds ksonnet specific options
@@ -506,6 +590,11 @@ spec:
                 kustomize:
                   description: Kustomize holds kustomize specific options
                   properties:
+                    commonAnnotations:
+                      additionalProperties:
+                        type: string
+                      description: CommonAnnotations adds additional kustomize commonAnnotations
+                      type: object
                     commonLabels:
                       additionalProperties:
                         type: string
@@ -569,6 +658,10 @@ spec:
                   description: Automated will keep an application synced to the target
                     revision
                   properties:
+                    allowEmpty:
+                      description: 'AllowEmpty allows apps have zero live resources
+                        (default: false)'
+                      type: boolean
                     prune:
                       description: 'Prune will prune resources automatically as part
                         of automated sync (default: false)'
@@ -577,8 +670,35 @@ spec:
                       description: 'SelfHeal enables auto-syncing if  (default: false)'
                       type: boolean
                   type: object
+                retry:
+                  description: Retry controls failed sync retry behavior
+                  properties:
+                    backoff:
+                      description: Backoff is a backoff strategy
+                      properties:
+                        duration:
+                          description: Duration is the amount to back off. Default
+                            unit is seconds, but could also be a duration (e.g. "2m",
+                            "1h")
+                          type: string
+                        factor:
+                          description: Factor is a factor to multiply the base duration
+                            after each failed retry
+                          format: int64
+                          type: integer
+                        maxDuration:
+                          description: MaxDuration is the maximum amount of time allowed
+                            for the backoff strategy
+                          type: string
+                      type: object
+                    limit:
+                      description: Limit is the maximum number of attempts when retrying
+                        a container
+                      format: int64
+                      type: integer
+                  type: object
                 syncOptions:
-                  description: Options allow youe to specify whole app sync-options
+                  description: Options allow you to specify whole app sync-options
                   items:
                     type: string
                   type: array
@@ -619,6 +739,7 @@ spec:
                 message:
                   type: string
                 status:
+                  description: Represents resource health status
                   type: string
               type: object
             history:
@@ -628,13 +749,20 @@ spec:
                 description: RevisionHistory contains information relevant to an application
                   deployment
                 properties:
+                  deployStartedAt:
+                    description: DeployStartedAt holds the time the deployment started
+                    format: date-time
+                    type: string
                   deployedAt:
+                    description: DeployedAt holds the time the deployment completed
                     format: date-time
                     type: string
                   id:
+                    description: ID is an auto incrementing identifier of the RevisionHistory
                     format: int64
                     type: integer
                   revision:
+                    description: Revision holds the revision of the sync
                     type: string
                   source:
                     description: ApplicationSource contains information about github
@@ -646,6 +774,8 @@ spec:
                       directory:
                         description: Directory holds path/directory specific options
                         properties:
+                          exclude:
+                            type: string
                           jsonnet:
                             description: ApplicationSourceJsonnet holds jsonnet specific
                               options
@@ -666,6 +796,11 @@ spec:
                                   - name
                                   - value
                                   type: object
+                                type: array
+                              libs:
+                                description: Additional library search dirs
+                                items:
+                                  type: string
                                 type: array
                               tlas:
                                 description: TLAS is a list of Jsonnet Top-level Arguments
@@ -738,6 +873,10 @@ spec:
                             description: Values is Helm values, typically defined
                               as a block
                             type: string
+                          version:
+                            description: Version is the Helm version to use for templating
+                              with
+                            type: string
                         type: object
                       ksonnet:
                         description: Ksonnet holds ksonnet specific options
@@ -768,6 +907,12 @@ spec:
                       kustomize:
                         description: Kustomize holds kustomize specific options
                         properties:
+                          commonAnnotations:
+                            additionalProperties:
+                              type: string
+                            description: CommonAnnotations adds additional kustomize
+                              commonAnnotations
+                            type: object
                           commonLabels:
                             additionalProperties:
                               type: string
@@ -833,8 +978,9 @@ spec:
                 type: object
               type: array
             observedAt:
-              description: ObservedAt indicates when the application state was updated
-                without querying latest git state
+              description: 'ObservedAt indicates when the application state was updated
+                without querying latest git state Deprecated: controller no longer
+                updates ObservedAt field'
               format: date-time
               type: string
             operationState:
@@ -852,6 +998,18 @@ spec:
                 operation:
                   description: Operation is the original requested operation
                   properties:
+                    info:
+                      items:
+                        properties:
+                          name:
+                            type: string
+                          value:
+                            type: string
+                        required:
+                        - name
+                        - value
+                        type: object
+                      type: array
                     initiatedBy:
                       description: OperationInitiator holds information about the
                         operation initiator
@@ -863,6 +1021,33 @@ spec:
                         username:
                           description: Name of a user who started operation.
                           type: string
+                      type: object
+                    retry:
+                      description: Retry controls failed sync retry behavior
+                      properties:
+                        backoff:
+                          description: Backoff is a backoff strategy
+                          properties:
+                            duration:
+                              description: Duration is the amount to back off. Default
+                                unit is seconds, but could also be a duration (e.g.
+                                "2m", "1h")
+                              type: string
+                            factor:
+                              description: Factor is a factor to multiply the base
+                                duration after each failed retry
+                              format: int64
+                              type: integer
+                            maxDuration:
+                              description: MaxDuration is the maximum amount of time
+                                allowed for the backoff strategy
+                              type: string
+                          type: object
+                        limit:
+                          description: Limit is the maximum number of attempts when
+                            retrying a container
+                          format: int64
+                          type: integer
                       type: object
                     sync:
                       description: SyncOperation contains sync operation details.
@@ -893,6 +1078,8 @@ spec:
                                 type: string
                               name:
                                 type: string
+                              namespace:
+                                type: string
                             required:
                             - kind
                             - name
@@ -915,6 +1102,8 @@ spec:
                               description: Directory holds path/directory specific
                                 options
                               properties:
+                                exclude:
+                                  type: string
                                 jsonnet:
                                   description: ApplicationSourceJsonnet holds jsonnet
                                     specific options
@@ -935,6 +1124,11 @@ spec:
                                         - name
                                         - value
                                         type: object
+                                      type: array
+                                    libs:
+                                      description: Additional library search dirs
+                                      items:
+                                        type: string
                                       type: array
                                     tlas:
                                       description: TLAS is a list of Jsonnet Top-level
@@ -1013,6 +1207,10 @@ spec:
                                   description: Values is Helm values, typically defined
                                     as a block
                                   type: string
+                                version:
+                                  description: Version is the Helm version to use
+                                    for templating with
+                                  type: string
                               type: object
                             ksonnet:
                               description: Ksonnet holds ksonnet specific options
@@ -1043,6 +1241,12 @@ spec:
                             kustomize:
                               description: Kustomize holds kustomize specific options
                               properties:
+                                commonAnnotations:
+                                  additionalProperties:
+                                    type: string
+                                  description: CommonAnnotations adds additional kustomize
+                                    commonAnnotations
+                                  type: object
                                 commonLabels:
                                   additionalProperties:
                                     type: string
@@ -1114,7 +1318,7 @@ spec:
                           description: SyncStrategy describes how to perform the sync
                           properties:
                             apply:
-                              description: Apply wil perform a `kubectl apply` to
+                              description: Apply will perform a `kubectl apply` to
                                 perform the sync.
                               properties:
                                 force:
@@ -1143,6 +1347,10 @@ spec:
                 phase:
                   description: Phase is the current phase of the operation
                   type: string
+                retryCount:
+                  description: RetryCount contains time of operation retries
+                  format: int64
+                  type: integer
                 startedAt:
                   description: StartedAt contains time of operation start
                   format: date-time
@@ -1209,6 +1417,8 @@ spec:
                         directory:
                           description: Directory holds path/directory specific options
                           properties:
+                            exclude:
+                              type: string
                             jsonnet:
                               description: ApplicationSourceJsonnet holds jsonnet
                                 specific options
@@ -1229,6 +1439,11 @@ spec:
                                     - name
                                     - value
                                     type: object
+                                  type: array
+                                libs:
+                                  description: Additional library search dirs
+                                  items:
+                                    type: string
                                   type: array
                                 tlas:
                                   description: TLAS is a list of Jsonnet Top-level
@@ -1303,6 +1518,10 @@ spec:
                               description: Values is Helm values, typically defined
                                 as a block
                               type: string
+                            version:
+                              description: Version is the Helm version to use for
+                                templating with
+                              type: string
                           type: object
                         ksonnet:
                           description: Ksonnet holds ksonnet specific options
@@ -1333,6 +1552,12 @@ spec:
                         kustomize:
                           description: Kustomize holds kustomize specific options
                           properties:
+                            commonAnnotations:
+                              additionalProperties:
+                                type: string
+                              description: CommonAnnotations adds additional kustomize
+                                commonAnnotations
+                              type: object
                             commonLabels:
                               additionalProperties:
                                 type: string
@@ -1417,6 +1642,7 @@ spec:
                       message:
                         type: string
                       status:
+                        description: Represents resource health status
                         type: string
                     type: object
                   hook:
@@ -1465,6 +1691,10 @@ spec:
                       description: ApplicationDestination contains deployment destination
                         information
                       properties:
+                        name:
+                          description: Name of the destination cluster which can be
+                            used instead of server (url) field
+                          type: string
                         namespace:
                           description: Namespace overrides the environment namespace
                             value in the ksonnet app.yaml
@@ -1485,6 +1715,8 @@ spec:
                         directory:
                           description: Directory holds path/directory specific options
                           properties:
+                            exclude:
+                              type: string
                             jsonnet:
                               description: ApplicationSourceJsonnet holds jsonnet
                                 specific options
@@ -1505,6 +1737,11 @@ spec:
                                     - name
                                     - value
                                     type: object
+                                  type: array
+                                libs:
+                                  description: Additional library search dirs
+                                  items:
+                                    type: string
                                   type: array
                                 tlas:
                                   description: TLAS is a list of Jsonnet Top-level
@@ -1579,6 +1816,10 @@ spec:
                               description: Values is Helm values, typically defined
                                 as a block
                               type: string
+                            version:
+                              description: Version is the Helm version to use for
+                                templating with
+                              type: string
                           type: object
                         ksonnet:
                           description: Ksonnet holds ksonnet specific options
@@ -1609,6 +1850,12 @@ spec:
                         kustomize:
                           description: Kustomize holds kustomize specific options
                           properties:
+                            commonAnnotations:
+                              additionalProperties:
+                                type: string
+                              description: CommonAnnotations adds additional kustomize
+                                commonAnnotations
+                              type: object
                             commonLabels:
                               additionalProperties:
                                 type: string
@@ -1733,6 +1980,23 @@ spec:
         spec:
           description: AppProjectSpec is the specification of an AppProject
           properties:
+            clusterResourceBlacklist:
+              description: ClusterResourceBlacklist contains list of blacklisted cluster
+                level resources
+              items:
+                description: GroupKind specifies a Group and a Kind, but does not
+                  force a version.  This is useful for identifying concepts during
+                  lookup stages without having partially valid types
+                properties:
+                  group:
+                    type: string
+                  kind:
+                    type: string
+                required:
+                - group
+                - kind
+                type: object
+              type: array
             clusterResourceWhitelist:
               description: ClusterResourceWhitelist contains list of whitelisted cluster
                 level resources
@@ -1760,6 +2024,10 @@ spec:
                 description: ApplicationDestination contains deployment destination
                   information
                 properties:
+                  name:
+                    description: Name of the destination cluster which can be used
+                      instead of server (url) field
+                    type: string
                   namespace:
                     description: Namespace overrides the environment namespace value
                       in the ksonnet app.yaml
@@ -1808,6 +2076,17 @@ spec:
               description: OrphanedResources specifies if controller should monitor
                 orphaned resources of apps in this project
               properties:
+                ignore:
+                  items:
+                    properties:
+                      group:
+                        type: string
+                      kind:
+                        type: string
+                      name:
+                        type: string
+                    type: object
+                  type: array
                 warn:
                   description: Warn indicates if warning condition should be created
                     for apps which have orphaned resources
@@ -1858,6 +2137,20 @@ spec:
                     type: array
                 required:
                 - name
+                type: object
+              type: array
+            signatureKeys:
+              description: List of PGP key IDs that commits to be synced to must be
+                signed with
+              items:
+                description: SignatureKey is the specification of a key required to
+                  verify commit signatures with
+                properties:
+                  keyID:
+                    description: The ID of the key in hexadecimal notation
+                    type: string
+                required:
+                - keyID
                 type: object
               type: array
             sourceRepos:
@@ -1943,6 +2236,16 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/name: argocd-redis
+    app.kubernetes.io/part-of: argocd
+  name: argocd-redis
+  namespace: argocd
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
     app.kubernetes.io/component: server
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
@@ -2008,6 +2311,25 @@ rules:
   - get
   - list
   - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/name: argocd-redis
+    app.kubernetes.io/part-of: argocd
+  name: argocd-redis
+  namespace: argocd
+rules:
+- apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - nonroot
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -2144,6 +2466,24 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/name: argocd-redis
+    app.kubernetes.io/part-of: argocd
+  name: argocd-redis
+  namespace: argocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argocd-redis
+subjects:
+- kind: ServiceAccount
+  name: argocd-redis
+  namespace: argocd
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
     app.kubernetes.io/component: server
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
@@ -2199,6 +2539,15 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-cm
+  namespace: argocd
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-gpg-keys-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-gpg-keys-cm
   namespace: argocd
 ---
 apiVersion: v1
@@ -2375,52 +2724,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/component: application-controller
-    app.kubernetes.io/name: argocd-application-controller
-    app.kubernetes.io/part-of: argocd
-  name: argocd-application-controller
-  namespace: argocd
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: argocd-application-controller
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: argocd-application-controller
-    spec:
-      containers:
-      - command:
-        - argocd-application-controller
-        - --status-processors
-        - "20"
-        - --operation-processors
-        - "10"
-        image: argoproj/argocd:v1.5.5
-        imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8082
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        name: argocd-application-controller
-        ports:
-        - containerPort: 8082
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 8082
-          initialDelaySeconds: 5
-          periodSeconds: 10
-      serviceAccountName: argocd-application-controller
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     app.kubernetes.io/component: dex-server
     app.kubernetes.io/name: argocd-dex-server
     app.kubernetes.io/part-of: argocd
@@ -2435,11 +2738,20 @@ spec:
       labels:
         app.kubernetes.io/name: argocd-dex-server
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: argocd
+              topologyKey: kubernetes.io/hostname
+            weight: 5
       containers:
       - command:
         - /shared/argocd-util
         - rundex
-        image: quay.io/dexidp/dex:v2.22.0
+        image: ghcr.io/dexidp/dex:v2.27.0
         imagePullPolicy: Always
         name: dex
         ports:
@@ -2455,7 +2767,7 @@ spec:
         - -n
         - /usr/local/bin/argocd-util
         - /shared
-        image: argoproj/argocd:v1.5.5
+        image: argoproj/argocd:v1.8.7
         imagePullPolicy: Always
         name: copyutil
         volumeMounts:
@@ -2484,17 +2796,38 @@ spec:
       labels:
         app.kubernetes.io/name: argocd-redis
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-redis
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: argocd
+              topologyKey: kubernetes.io/hostname
+            weight: 5
       containers:
       - args:
         - --save
         - ""
         - --appendonly
         - "no"
-        image: redis:5.0.3
+        image: redis:5.0.10-alpine
         imagePullPolicy: Always
         name: redis
         ports:
         - containerPort: 6379
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      serviceAccountName: argocd-redis
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -2514,6 +2847,21 @@ spec:
       labels:
         app.kubernetes.io/name: argocd-repo-server
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-repo-server
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: argocd
+              topologyKey: kubernetes.io/hostname
+            weight: 5
       automountServiceAccountToken: false
       containers:
       - command:
@@ -2521,27 +2869,34 @@ spec:
         - argocd-repo-server
         - --redis
         - argocd-redis:6379
-        image: argoproj/argocd:v1.5.5
+        image: argoproj/argocd:v1.8.7
         imagePullPolicy: Always
         livenessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          tcpSocket:
-            port: 8081
+          failureThreshold: 3
+          httpGet:
+            path: /healthz?full=true
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 5
         name: argocd-repo-server
         ports:
         - containerPort: 8081
         - containerPort: 8084
         readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8084
           initialDelaySeconds: 5
           periodSeconds: 10
-          tcpSocket:
-            port: 8081
         volumeMounts:
         - mountPath: /app/config/ssh
           name: ssh-known-hosts
         - mountPath: /app/config/tls
           name: tls-certs
+        - mountPath: /app/config/gpg/source
+          name: gpg-keys
+        - mountPath: /app/config/gpg/keys
+          name: gpg-keyring
       volumes:
       - configMap:
           name: argocd-ssh-known-hosts-cm
@@ -2549,6 +2904,11 @@ spec:
       - configMap:
           name: argocd-tls-certs-cm
         name: tls-certs
+      - configMap:
+          name: argocd-gpg-keys-cm
+        name: gpg-keys
+      - emptyDir: {}
+        name: gpg-keyring
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -2568,6 +2928,21 @@ spec:
       labels:
         app.kubernetes.io/name: argocd-server
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-server
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: argocd
+              topologyKey: kubernetes.io/hostname
+            weight: 5
       containers:
       - command:
         - argocd-server
@@ -2577,11 +2952,11 @@ spec:
         - --disable-auth
         - --basehref
         - argocd
-        image: argoproj/argocd:v1.5.5
+        image: argoproj/argocd:v1.8.7
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
-            path: /healthz
+            path: /healthz?full=true
             port: 8080
           initialDelaySeconds: 3
           periodSeconds: 30
@@ -2610,6 +2985,67 @@ spec:
       - configMap:
           name: argocd-tls-certs-cm
         name: tls-certs
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: application-controller
+    app.kubernetes.io/name: argocd-application-controller
+    app.kubernetes.io/part-of: argocd
+  name: argocd-application-controller
+  namespace: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-application-controller
+  serviceName: argocd-application-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argocd-application-controller
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-application-controller
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: argocd
+              topologyKey: kubernetes.io/hostname
+            weight: 5
+      containers:
+      - command:
+        - argocd-application-controller
+        - --status-processors
+        - "20"
+        - --operation-processors
+        - "10"
+        image: argoproj/argocd:v1.8.7
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        name: argocd-application-controller
+        ports:
+        - containerPort: 8082
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      serviceAccountName: argocd-application-controller
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
