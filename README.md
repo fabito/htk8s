@@ -30,6 +30,9 @@ kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_arm
 
 ### The Gitops way
 
+![argocd htpc application](https://drive.google.com/uc?id=19gpl16cxBIQQ7tE_4E8yn3VLK7qLjHkV)
+
+
 ```bash
 # x86_64 only
 kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_argocd.yaml
