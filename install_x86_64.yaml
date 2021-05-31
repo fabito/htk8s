@@ -577,22 +577,6 @@ spec:
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-(??)      - command:
-(??)        - sh
-(??)        - -c
-(??)        - |
-(??)          echo Saving settings.json
-(??)          echo '{"download-dir": "/downloads", "rpc-whitelist-enabled": false, "rpc-host-whitelist-enabled": false}' > /config/settings.json;
-(??)          echo settings.json successfully saved
-(??)        image: busybox
-(??)        name: setup-transmission
-(??)        securityContext:
-(??)          runAsGroup: 1000
-(??)          runAsUser: 1000
-(??)        volumeMounts:
-(??)        - mountPath: /config
-(??)          name: htpc-home
-(??)          subPath: transmission
       securityContext:
         fsGroup: 1000
       volumes:
