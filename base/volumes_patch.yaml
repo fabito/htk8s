@@ -49,11 +49,24 @@ spec:
           path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
+  # ---
+  # apiVersion: apps/v1
+  # kind: Deployment
+  # metadata:
+  #   name: emby
+  # spec:
+  #   template:
+  #     spec:
+  #       volumes: 
+  #       - hostPath: 
+  #           path: /opt/htpc 
+  #           type: DirectoryOrCreate 
+  #         name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emby
+  name: jellyfin
 spec:
   template:
     spec:
@@ -61,7 +74,7 @@ spec:
       - hostPath: 
           path: /opt/htpc 
           type: DirectoryOrCreate 
-        name: htpc-home
+        name: htpc-home        
 ---
 apiVersion: apps/v1
 kind: Deployment

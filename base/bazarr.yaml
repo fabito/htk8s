@@ -7,7 +7,7 @@ spec:
   - port: 6767
     protocol: TCP
     targetPort: 6767
-    name: webui
+    name: http-webui
   selector:
     run: bazarr
 ---

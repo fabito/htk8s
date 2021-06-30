@@ -7,7 +7,7 @@ spec:
   - port: 9091
     protocol: TCP
     targetPort: 9091
-    name: webui
+    name: http-webui
   selector:
     run: transmission
 ---
@@ -85,7 +85,6 @@ spec:
         - containerPort: 51413
           name: torrent-udp
           protocol: UDP
-        resources: {}
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home
@@ -96,4 +95,3 @@ spec:
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-

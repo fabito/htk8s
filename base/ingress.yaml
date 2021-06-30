@@ -6,27 +6,31 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      # - path: /
+      #   backend:
+      #     serviceName: jellyfin
+      #     servicePort: http-webui
+      - path: /jellyfin
         backend:
-          serviceName: emby
-          servicePort: webui
+          serviceName: jellyfin
+          servicePort: http-webui
       - path: /jackett
         backend:
           serviceName: jackett
-          servicePort: webui
+          servicePort: http-webui
       - path: /sonarr
         backend:
           serviceName: sonarr
-          servicePort: webui
+          servicePort: http-webui
       - path: /radarr
         backend:
           serviceName: radarr
-          servicePort: webui
+          servicePort: http-webui
       - path: /bazarr
         backend:
           serviceName: bazarr
-          servicePort: webui
+          servicePort: http-webui
       - path: /transmission
         backend:
           serviceName: transmission
-          servicePort: webui
+          servicePort: http-webui
