@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: htpc
@@ -7,26 +7,44 @@ spec:
   - http:
       paths:
       - path: /
+        pathType: Exact
         backend:
-          serviceName: emby
-          servicePort: webui
+          service:
+            name: emby
+            port:
+              name: webui
       - path: /jackett
+        pathType: Exact
         backend:
-          serviceName: jackett
-          servicePort: webui
+          service:
+            name: jackett
+            port:
+              name: webui
       - path: /sonarr
+        pathType: Exact
         backend:
-          serviceName: sonarr
-          servicePort: webui
+          service:
+            name: sonarr
+            port:
+              name: webui
       - path: /radarr
+        pathType: Exact
         backend:
-          serviceName: radarr
-          servicePort: webui
+          service:
+            name: radarr
+            port:
+              name: webui
       - path: /bazarr
+        pathType: Exact
         backend:
-          serviceName: bazarr
-          servicePort: webui
+          service:
+            name: bazarr
+            port:
+              name: webui
       - path: /transmission
+        pathType: Exact
         backend:
-          serviceName: transmission
-          servicePort: webui
+          service:
+            name: transmission
+            port:
+              name: webui
