@@ -600,41 +600,41 @@ spec:
           service:
             name: emby
             port:
-              name: webui
+              number: 8096
         path: /
         pathType: Exact
       - backend:
           service:
             name: jackett
             port:
-              name: webui
+              number: 9117
         path: /jackett
         pathType: Exact
       - backend:
           service:
             name: sonarr
             port:
-              name: webui
+              number: 8989
         path: /sonarr
         pathType: Exact
       - backend:
           service:
             name: radarr
             port:
-              name: webui
+              number: 7878
         path: /radarr
         pathType: Exact
       - backend:
           service:
             name: bazarr
             port:
-              name: webui
+              number: 6767
         path: /bazarr
         pathType: Exact
       - backend:
           service:
             name: transmission
             port:
-              name: webui
+              number: 9091
         path: /transmission
         pathType: Exact
