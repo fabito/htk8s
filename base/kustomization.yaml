@@ -8,7 +8,7 @@ commonLabels:
 
 resources:
 - namespace.yaml
-- jackett.yaml
+- jackett
 - radarr
 - sonarr
 - bazarr
