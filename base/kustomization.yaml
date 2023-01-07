@@ -10,7 +10,7 @@ resources:
 - namespace.yaml
 - jackett.yaml
 - radarr
-- sonarr.yaml
+- sonarr
 - bazarr.yaml
 - transmission.yaml
 - emby.yaml
