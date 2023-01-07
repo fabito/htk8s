@@ -38,4 +38,4 @@ spec:
   # Sync policy
   syncPolicy:
     automated:
-      prune: false      
+      prune: false

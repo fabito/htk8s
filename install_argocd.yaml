@@ -2950,8 +2950,8 @@ spec:
         - /shared/app
         - --insecure
         - --disable-auth
-        - --basehref
-        - argocd
+        - --rootpath
+        - /argocd
         image: argoproj/argocd:v1.8.7
         imagePullPolicy: Always
         livenessProbe:
@@ -3083,23 +3083,21 @@ spec:
     automated:
       prune: false
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  annotations:
-    traefik.frontend.rule.type: PathPrefixStrip
-    traefik.ingress.kubernetes.io/frontend-entry-points: http, https
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
-    traefik.ingress.kubernetes.io/redirect-permanent: "true"
   name: argocd
   namespace: argocd
 spec:
-  rules:
-  - http:
-      paths:
-      - backend:
-          serviceName: argocd-server
-          servicePort: http
-        path: /argocd
-  tls:
-  - secretName: argocd-secret
+  entryPoints:
+  - web
+  - websecure
+  routes:
+  - kind: Rule
+    match: PathPrefix(`/argocd`)
+    priority: 0
+    services:
+    - kind: Service
+      name: argocd-server
+      namespace: argocd
+      port: http
