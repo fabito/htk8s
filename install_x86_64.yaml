@@ -585,56 +585,67 @@ spec:
           type: DirectoryOrCreate
         name: htpc-home
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   labels:
     app: htpc
   name: htpc
   namespace: htpc
 spec:
-  rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: emby
-            port:
-              number: 8096
-        path: /
-        pathType: Exact
-      - backend:
-          service:
-            name: jackett
-            port:
-              number: 9117
-        path: /jackett
-        pathType: Exact
-      - backend:
-          service:
-            name: sonarr
-            port:
-              number: 8989
-        path: /sonarr
-        pathType: Exact
-      - backend:
-          service:
-            name: radarr
-            port:
-              number: 7878
-        path: /radarr
-        pathType: Exact
-      - backend:
-          service:
-            name: bazarr
-            port:
-              number: 6767
-        path: /bazarr
-        pathType: Exact
-      - backend:
-          service:
-            name: transmission
-            port:
-              number: 9091
-        path: /transmission
-        pathType: Exact
+  entryPoints: []
+  routes:
+  - kind: Rule
+    match: PathPrefix(`/`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: emby
+      namespace: htpc
+      port: 8096
+  - kind: Rule
+    match: PathPrefix(`/jackett`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: jackett
+      namespace: htpc
+      port: 9117
+  - kind: Rule
+    match: PathPrefix(`/sonarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: sonarr
+      namespace: htpc
+      port: 8989
+  - kind: Rule
+    match: PathPrefix(`/radarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: radarr
+      namespace: htpc
+      port: 7878
+  - kind: Rule
+    match: PathPrefix(`/bazarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: bazarr
+      namespace: htpc
+      port: 6767
+  - kind: Rule
+    match: PathPrefix(`/transmission`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: transmission
+      namespace: htpc
+      port: 9091
