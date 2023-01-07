@@ -11,7 +11,7 @@ resources:
 - jackett.yaml
 - radarr
 - sonarr
-- bazarr.yaml
+- bazarr
 - transmission.yaml
 - emby.yaml
 - ingress-route.yaml
