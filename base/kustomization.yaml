@@ -9,7 +9,7 @@ commonLabels:
 resources:
 - namespace.yaml
 - jackett.yaml
-- radarr.yaml
+- radarr
 - sonarr.yaml
 - bazarr.yaml
 - transmission.yaml

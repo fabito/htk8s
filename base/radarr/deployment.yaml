@@ -1,15 +1,3 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: radarr
-spec:
-  ports:
-  - port: 7878
-    protocol: TCP
-    targetPort: 7878
-    name: webui
-  selector:
-    run: radarr
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,13 +29,13 @@ spec:
           subPath: radarr    
         - mountPath: /movies 
           name: htpc-home
-          subPath: media/movies      
+          subPath: media/movies
       - name: config
         image: busybox
         command: ["sh", "-c"]
         securityContext:
           runAsUser: 1000
-          runAsGroup: 1000        
+          runAsGroup: 1000
         args:
           - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(RADARR)</UrlBase></Config>'> /config/config.xml;echo end;"
         volumeMounts: 
@@ -92,5 +80,4 @@ spec:
           subPath: media/movies
         - mountPath: /downloads 
           name: htpc-home
-          subPath: downloads        
-
+          subPath: downloads
