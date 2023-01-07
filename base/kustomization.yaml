@@ -14,7 +14,7 @@ resources:
 - bazarr.yaml
 - transmission.yaml
 - emby.yaml
-- ingress.yaml
+- ingress-route.yaml
 
 patchesStrategicMerge:
 - volumes_patch.yaml
