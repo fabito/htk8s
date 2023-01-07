@@ -8,12 +8,12 @@ commonLabels:
 
 resources:
 - namespace.yaml
-- jackett.yaml
-- radarr.yaml
-- sonarr.yaml
-- bazarr.yaml
-- transmission.yaml
-- emby.yaml
+- jackett
+- radarr
+- sonarr
+- bazarr
+- transmission
+- emby
 - ingress-route.yaml
 
 patchesStrategicMerge:
