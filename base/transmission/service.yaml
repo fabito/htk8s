@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+spec:
+  ports:
+  - port: 9091
+    protocol: TCP
+    targetPort: 9091
+    name: webui
+  selector:
+    run: transmission

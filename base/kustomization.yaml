@@ -12,7 +12,7 @@ resources:
 - radarr
 - sonarr
 - bazarr
-- transmission.yaml
+- transmission
 - emby
 - ingress-route.yaml
 
