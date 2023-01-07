@@ -9,7 +9,7 @@ namespace: argocd
 resources:
 - namespace.yaml
 - application.yaml
-- ingress.yaml
+- ingress-route.yaml
 
 patchesStrategicMerge:
 - argo-server_patch.yaml

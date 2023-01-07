@@ -13,5 +13,5 @@ spec:
         - /shared/app
         - --insecure
         - --disable-auth
-        - --basehref
-        - argocd
+        - --rootpath
+        - /argocd
