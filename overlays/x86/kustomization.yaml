@@ -6,14 +6,14 @@ bases:
 
 images:
   - name: linuxserver/jackett
-    newTag: "0.20.1307"
+    newTag: 0.20.2721
   - name: linuxserver/sonarr
-    newTag: 3.0.8.1507-ls149
+    newTag: 3.0.9.1549-ls174
   - name: linuxserver/radarr
-    newTag: "4.1.0"
+    newTag: 4.3.2.6857-ls160
   - name: linuxserver/bazarr
-    newTag: "1.1.0"
+    newTag: v1.1.4-ls178
   - name: linuxserver/transmission
-    newTag: 3.00-r5-ls127
+    newTag: 3.00-r8-ls150
   - name: emby/embyserver
-    newTag: "4.8.0.5"
+    newTag: 4.8.0.21
