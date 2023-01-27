@@ -136,7 +136,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/bazarr:1.1.0
+        image: linuxserver/bazarr:v1.1.4-ls178
         name: bazarr
         ports:
         - containerPort: 6767
@@ -220,7 +220,7 @@ spec:
           value: "1000"
         - name: GID
           value: "1000"
-        image: emby/embyserver:4.8.0.5
+        image: emby/embyserver:4.8.0.21
         name: emby
         ports:
         - containerPort: 8096
@@ -275,7 +275,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/jackett:0.20.1307
+        image: linuxserver/jackett:0.20.2721
         name: jackett
         ports:
         - containerPort: 9117
@@ -337,7 +337,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/radarr:4.1.0
+        image: linuxserver/radarr:4.3.2.6857-ls160
         livenessProbe:
           exec:
             command:
@@ -435,7 +435,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/sonarr:3.0.8.1507-ls149
+        image: linuxserver/sonarr:3.0.9.1549-ls174
         livenessProbe:
           exec:
             command:
@@ -537,7 +537,7 @@ spec:
           value: ""
         - name: HOST_WHITELIST
           value: ""
-        image: linuxserver/transmission:3.00-r5-ls127
+        image: linuxserver/transmission:3.00-r8-ls150
         name: transmission
         ports:
         - containerPort: 9091
