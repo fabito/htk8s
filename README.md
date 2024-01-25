@@ -40,7 +40,7 @@ kubectl apply -f https://raw.githubusercontent.com/fabito/htk8s/v0.1/install_arg
 
 This alternate manifest will install [Argo CD](https://github.com/argoproj/argo-cd) along with the [htpc application](argocd/application.yaml). Then it will monitor this repo for changes and apply them to the cluster accordingly (more specifically the `overlays/x86`overlay).
 
-You can access the Argo CD ui at: https://localhost/argocd.
+You can access the ArgoCD UI at: https://localhost/argocd.
 
 ### Verifying the installation
 
@@ -86,7 +86,7 @@ replicaset.apps/sonarr-b65c8956           1         1         1       24h
 replicaset.apps/transmission-5f7fdc6cb5   1         1         1       24h
 ```
 
-You should also be able to reach each component's ui using the links below. Don't forget to replace `localhost` by the IP or the server name running k3s.
+You should also be able to reach each component's UI using the links below. Don't forget to replace `localhost` with the IP or the server name running k3s.
 
 |App|URI
 |---|---
@@ -97,7 +97,7 @@ You should also be able to reach each component's ui using the links below. Don'
 |transmission|http://localhost/transmission
 |emby|http://localhost/
 
-Check the [ingress.yaml](base/ingress.yaml) for more details.
+Check the [ingress-route.yaml](base/ingress-route.yaml) for more details.
 
 Each module except for Emby is configured to respond on a custom basepath (check the init containers logic for more details).
 
