@@ -11,7 +11,7 @@ It includes the following applications:
 * [Radarr](https://radarr.video/) for movies
 * [Bazarr](https://github.com/morpheus65535/bazarr) for subtitles
 * Transmission for torrents
-* [Jackett](https://github.com/Jackett/Jackett) 
+* [Jackett](https://github.com/Jackett/Jackett) for torrent tracker searching
 * [Emby](https://emby.media/)
 
 Applications state (settings / db) and media files are stored in a shared volume of type `hostPath`. It does not use PVC and currently only works if the whole `htpc` namespace is deployed in the same node.
