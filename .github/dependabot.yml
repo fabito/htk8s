@@ -1,10 +1,14 @@
 version: 2
 updates:
-  # Configuration for Dockerfile
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/overlays"
     schedule:
       interval: "weekly"
     commit-message:
-      # Prefix all commit messages with "[docker] " (no colon, but a trailing whitespace)
+      prefix: "[docker] "
+  - package-ecosystem: "docker"
+    directory: "/argocd"
+    schedule:
+      interval: "weekly"
+    commit-message:
       prefix: "[docker] "
