@@ -14,6 +14,7 @@ resources:
 - bazarr
 - transmission
 - emby
+- navidrome
 - ingress-route.yaml
 
 patchesStrategicMerge:

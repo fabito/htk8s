@@ -17,3 +17,5 @@ images:
     newTag: 4.0.5-r0-ls228
   - name: emby/embyserver
     newTag: 4.9.0.12
+  - name: deluan/navidrome
+    newTag: 0.52.0

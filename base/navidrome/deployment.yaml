@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: navidrome
+  name: navidrome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: navidrome
+  template:
+    metadata:
+      labels:
+        run: navidrome
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000    
+      initContainers:
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: ND_DATAFOLDER
+          value: /data
+        - name: ND_BASEURL	
+          value: /navidrome
+        - name: ND_MUSICFOLDER	
+          value: /music
+
+        image: deluan/navidrome
+        name: navidrome
+        ports:
+        - containerPort: 4533
+          name: webui
+        volumeMounts: 
+        - mountPath: /data
+          name: htpc-home
+          subPath: navidrome
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads

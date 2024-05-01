@@ -60,3 +60,12 @@ spec:
       name: transmission
       namespace: "htpc"
       port: 9091
+  - kind: Rule
+    match: PathPrefix(`/navidrome`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: navidrome
+      namespace: "htpc"
+      port: 4533
