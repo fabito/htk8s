@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: prowlarr
+  name: prowlarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: prowlarr
+  template:
+    metadata:
+      labels:
+        run: prowlarr
+    spec:
+      securityContext:
+        fsGroup: 1000    
+      initContainers:
+      - name: config
+        image: busybox
+        command: ["sh", "-c"]
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          args:
+            - |
+              echo 'Customizing Prowlarr config...'
+              if [[ ! -f /config/config.xml ]]; then
+                echo '<Config><UrlBase>/$(PROWLARR)</UrlBase></Config>'> /config/config.xml
+              fi
+              echo 'Prowlarr config customized.'
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: prowlarr
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: linuxserver/prowlarr
+        name: prowlarr
+        ports:
+        - containerPort: 9696
+          name: webui
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: prowlarr

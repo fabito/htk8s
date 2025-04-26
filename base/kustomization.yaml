@@ -12,6 +12,7 @@ resources:
 - radarr
 - sonarr
 - bazarr
+- prowlarr
 - transmission
 - emby
 - ingress-route.yaml
@@ -30,4 +31,9 @@ vars:
     objref:
       kind: Service
       name: radarr
+      apiVersion: v1
+  - name: PROWLARR
+    objref:
+      kind: Service
+      name: prowlarr
       apiVersion: v1

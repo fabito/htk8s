@@ -62,6 +62,23 @@ kind: Service
 metadata:
   labels:
     app: htpc
+  name: prowlarr
+  namespace: htpc
+spec:
+  ports:
+  - name: webui
+    port: 9696
+    protocol: TCP
+    targetPort: 9696
+  selector:
+    app: htpc
+    run: prowlarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htpc
   name: radarr
   namespace: htpc
 spec:
@@ -308,6 +325,84 @@ spec:
           path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htpc
+    run: prowlarr
+  name: prowlarr
+  namespace: htpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htpc
+      run: prowlarr
+  template:
+    metadata:
+      labels:
+        app: htpc
+        run: prowlarr
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: linuxserver/prowlarr
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(sed -ne
+              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        name: prowlarr
+        ports:
+        - containerPort: 9696
+          name: webui
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(sed
+              -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: prowlarr
+      initContainers:
+      - command:
+        - sh
+        - -c
+        image: busybox
+        name: config
+        securityContext:
+          args:
+          - |
+            echo 'Customizing Prowlarr config...'
+            if [[ ! -f /config/config.xml ]]; then
+              echo '<Config><UrlBase>/$(PROWLARR)</UrlBase></Config>'> /config/config.xml
+            fi
+            echo 'Prowlarr config customized.'
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: prowlarr
+      securityContext:
+        fsGroup: 1000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -649,3 +744,12 @@ spec:
       name: transmission
       namespace: htpc
       port: 9091
+  - kind: Rule
+    match: PathPrefix(`/prowlarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: prowlarr
+      namespace: htpc
+      port: 9696

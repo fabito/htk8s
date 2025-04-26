@@ -60,3 +60,12 @@ spec:
       name: transmission
       namespace: "htpc"
       port: 9091
+  - kind: Rule
+    match: PathPrefix(`/prowlarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: prowlarr
+      namespace: "htpc"
+      port: 9696
