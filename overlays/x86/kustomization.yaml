@@ -8,12 +8,14 @@ images:
   - name: linuxserver/jackett
     newTag: v0.22.1646-ls708
   - name: linuxserver/sonarr
-    newTag: 4.0.13.2932-ls274
+    newTag: 4.0.14.2939-ls280
   - name: linuxserver/radarr
-    newTag: 5.19.3.9730-ls263
+    newTag: 5.22.4.9896-ls271
   - name: linuxserver/bazarr
-    newTag: v1.5.1-ls295
+    newTag: v1.5.1-ls301
   - name: linuxserver/transmission
-    newTag: 4.0.6-r3-ls286
+    newTag: 4.0.6-r4-ls290
   - name: emby/embyserver
-    newTag: 4.9.0.42
+    newTag: 4.9.0.50
+  - name: linuxserver/prowlarr
+    newTag: 1.34.1.5021-ls115
