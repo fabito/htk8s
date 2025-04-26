@@ -18,6 +18,13 @@ spec:
       securityContext:
         fsGroup: 1000    
       initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config"]
+        volumeMounts:
+        - mountPath: /config 
+          name: htpc-home
+          subPath: prowlarr
       - name: config
         image: busybox
         securityContext:

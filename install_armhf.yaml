@@ -382,6 +382,16 @@ spec:
           name: htpc-home
           subPath: prowlarr
       initContainers:
+      - command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /config
+        image: busybox
+        name: chown
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: prowlarr
       - args:
         - |
           echo 'Customizing Prowlarr config...'
