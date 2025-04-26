@@ -382,19 +382,19 @@ spec:
           name: htpc-home
           subPath: prowlarr
       initContainers:
-      - command:
+      - args:
+        - |
+          echo 'Customizing Prowlarr config...'
+          if [[ ! -f /config/config.xml ]]; then
+            echo '<Config><UrlBase>/prowlarr</UrlBase></Config>'> /config/config.xml
+          fi
+          echo 'Prowlarr config customized.'
+        command:
         - sh
         - -c
         image: busybox
         name: config
         securityContext:
-          args:
-          - |
-            echo 'Customizing Prowlarr config...'
-            if [[ ! -f /config/config.xml ]]; then
-              echo '<Config><UrlBase>/$(PROWLARR)</UrlBase></Config>'> /config/config.xml
-            fi
-            echo 'Prowlarr config customized.'
           runAsGroup: 1000
           runAsUser: 1000
         volumeMounts:

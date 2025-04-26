@@ -20,17 +20,17 @@ spec:
       initContainers:
       - name: config
         image: busybox
-        command: ["sh", "-c"]
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
-          args:
-            - |
-              echo 'Customizing Prowlarr config...'
-              if [[ ! -f /config/config.xml ]]; then
-                echo '<Config><UrlBase>/$(PROWLARR)</UrlBase></Config>'> /config/config.xml
-              fi
-              echo 'Prowlarr config customized.'
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo 'Customizing Prowlarr config...'
+            if [[ ! -f /config/config.xml ]]; then
+              echo '<Config><UrlBase>/$(PROWLARR)</UrlBase></Config>'> /config/config.xml
+            fi
+            echo 'Prowlarr config customized.'
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home
