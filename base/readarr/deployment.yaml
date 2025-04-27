@@ -78,7 +78,13 @@ spec:
           subPath: readarr
         - mountPath: /books
           name: htpc-home
-          subPath: media/books
+          subPath: media/books/books
+        - mountPath: /audiobooks
+          name: htpc-home
+          subPath: media/books/audiobooks
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
         - mountPath: /downloads
           name: htpc-home
           subPath: downloads
