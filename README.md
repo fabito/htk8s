@@ -11,7 +11,9 @@ It includes the following applications:
 * [Radarr](https://radarr.video/) for movies
 * [Bazarr](https://github.com/morpheus65535/bazarr) for subtitles
 * Transmission for torrents
-* [Jackett](https://github.com/Jackett/Jackett) for torrent tracker searching
+* ~~[Jackett](https://github.com/Jackett/Jackett) for torrent tracker searching~~
+* [Prowlarr](https://prowlarr.com/) for index management
+* [Readarr](https://readarr.com/) for ebooks
 * [Emby](https://emby.media/)
 
 Applications state (settings / db) and media files are stored in a shared volume of type `hostPath`. It does not use PVC and currently only works if the whole `htpc` namespace is deployed in the same node.
@@ -94,6 +96,8 @@ You should also be able to reach each component's UI using the links below. Don'
 |sonarr|http://localhost/sonarr
 |bazarr|http://localhost/bazarr
 |jacket|http://localhost/jackett
+|prowlarr|http://localhost/prowlarr
+|readarr|http://localhost/readarr
 |transmission|http://localhost/transmission
 |emby|http://localhost/
 
@@ -112,9 +116,11 @@ It uses a `hostPath` volume to store configuration and media files. It defaults 
 ├── bazarr
 ├── downloads
 ├── emby
-├── jackett
+├── prowlarr
+├── readarr
 ├── media
 │   ├── movies
+│   ├── books
 │   └── tv
 ├── radarr
 ├── sonarr
