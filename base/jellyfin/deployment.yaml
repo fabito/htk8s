@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: jellyfin
+  name: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: jellyfin
+  template:
+    metadata:
+      labels:
+        run: jellyfin
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: lscr.io/linuxserver/jellyfin
+        name: jellyfin
+        ports:
+        - containerPort: 8096
+          name: webui
+          protocol: TCP
+        - containerPort: 8920
+          name: webui-ssl
+          protocol: TCP
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: jellyfin
+        - mountPath: /tv 
+          name: htpc-home
+          subPath: media/tv
+        - mountPath: /movies 
+          name: htpc-home
+          subPath: media/movies
+        - mountPath: /books
+          name: htpc-home
+          subPath: media/books

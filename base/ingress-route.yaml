@@ -3,7 +3,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: htpc
-spec:
+  spec:
   entryPoints: []
   routes:
   - kind: Rule
@@ -12,7 +12,7 @@ spec:
     priority: 0
     services:
     - kind: Service
-      name: emby
+      name: jellyfin
       namespace: "htpc"
       port: 8096
   - kind: Rule
