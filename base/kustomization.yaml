@@ -16,6 +16,7 @@ resources:
 - transmission
 - emby
 - ingress-route.yaml
+- readarr
 
 patchesStrategicMerge:
 - volumes_patch.yaml
@@ -36,4 +37,9 @@ vars:
     objref:
       kind: Service
       name: prowlarr
+      apiVersion: v1
+  - name: READARR
+    objref:
+      kind: Service
+      name: readarr
       apiVersion: v1

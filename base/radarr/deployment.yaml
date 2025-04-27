@@ -24,10 +24,10 @@ spec:
         image: busybox
         command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /movies"]
         volumeMounts:
-        - mountPath: /config 
+        - mountPath: /config
           name: htpc-home
-          subPath: radarr    
-        - mountPath: /movies 
+          subPath: radarr
+        - mountPath: /movies
           name: htpc-home
           subPath: media/movies
       - name: config
