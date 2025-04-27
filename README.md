@@ -14,7 +14,8 @@ It includes the following applications:
 * ~~[Jackett](https://github.com/Jackett/Jackett) for torrent tracker searching~~
 * [Prowlarr](https://prowlarr.com/) for index management
 * [Readarr](https://readarr.com/) for ebooks
-* [Emby](https://emby.media/)
+* ~~[Emby](https://emby.media/)~~
+* [Jellyfin](https://jellyfin.org/)
 
 Applications state (settings / db) and media files are stored in a shared volume of type `hostPath`. It does not use PVC and currently only works if the whole `htpc` namespace is deployed in the same node.
 
@@ -99,11 +100,11 @@ You should also be able to reach each component's UI using the links below. Don'
 |prowlarr|http://localhost/prowlarr
 |readarr|http://localhost/readarr
 |transmission|http://localhost/transmission
-|emby|http://localhost/
+|jellyfin|http://localhost/
 
 Check the [ingress-route.yaml](base/ingress-route.yaml) for more details.
 
-Each module except for Emby is configured to respond on a custom basepath (check the init containers logic for more details).
+Each module except for Jellyfin is configured to respond on a custom basepath (check the init containers logic for more details).
 
 ## How it works (WIP)
 
@@ -115,7 +116,7 @@ It uses a `hostPath` volume to store configuration and media files. It defaults 
 /opt/htpc
 ├── bazarr
 ├── downloads
-├── emby
+├── jellyfin
 ├── prowlarr
 ├── readarr
 ├── media
