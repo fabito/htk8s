@@ -34,6 +34,20 @@ spec:
         - containerPort: 8920
           name: webui-ssl
           protocol: TCP
+        - containerPort: 1900
+          name: service-discovery
+          protocol: UDP
+        - containerPort: 7359
+          name: client-discovery
+          protocol: UDP
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8096/health"
+          initialDelaySeconds: 30
+          periodSeconds: 10
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home

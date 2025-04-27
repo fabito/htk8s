@@ -317,6 +317,14 @@ spec:
         - name: PGID
           value: "1000"
         image: lscr.io/linuxserver/jellyfin:10.10.7ubu2404-ls61
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8096/health"
+          initialDelaySeconds: 30
+          periodSeconds: 10
         name: jellyfin
         ports:
         - containerPort: 8096
@@ -325,6 +333,12 @@ spec:
         - containerPort: 8920
           name: webui-ssl
           protocol: TCP
+        - containerPort: 1900
+          name: service-discovery
+          protocol: UDP
+        - containerPort: 7359
+          name: client-discovery
+          protocol: UDP
         volumeMounts:
         - mountPath: /config
           name: htpc-home
