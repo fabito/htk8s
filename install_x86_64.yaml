@@ -607,7 +607,7 @@ spec:
       - command:
         - sh
         - -c
-        - chown -R 1000:1000 /config && chown -R 1000:1000 /books
+        - chown -R 1000:1000 /config /books /comics /audiobooks
         image: busybox
         name: chown
         volumeMounts:
@@ -616,7 +616,13 @@ spec:
           subPath: readarr
         - mountPath: /books
           name: htpc-home
-          subPath: media/books
+          subPath: media/books/books
+        - mountPath: /audiobooks
+          name: htpc-home
+          subPath: media/books/audiobooks
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
       - args:
         - |
           echo 'Customizing config...'
