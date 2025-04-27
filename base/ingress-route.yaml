@@ -12,7 +12,7 @@ spec:
     priority: 0
     services:
     - kind: Service
-      name: emby
+      name: jellyfin
       namespace: "htpc"
       port: 8096
   - kind: Rule

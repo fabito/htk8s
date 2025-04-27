@@ -18,3 +18,5 @@ images:
   - name: emby/embyserver
     newName: emby/embyserver_arm32v7
     newTag: latest
+  - name: lscr.io/linuxserver/jellyfin
+    newTag: arm32v7-latest

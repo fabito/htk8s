@@ -14,9 +14,9 @@ resources:
 - bazarr
 - prowlarr
 - transmission
-- emby
 - ingress-route.yaml
 - readarr
+- jellyfin
 
 patchesStrategicMerge:
 - volumes_patch.yaml
