@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: readarr
 spec:
-  selector:
-    app: readarr
   ports:
   - port: 8787
+    protocol: TCP
     targetPort: 8787
-    name: web
+    name: webui
+  selector:
+    run: readarr

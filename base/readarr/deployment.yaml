@@ -1,15 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    run: readarr
   name: readarr
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: readarr
+      run: readarr
   template:
     metadata:
       labels:
-        app: readarr
+        run: readarr
     spec:
       securityContext:
         fsGroup: 1000

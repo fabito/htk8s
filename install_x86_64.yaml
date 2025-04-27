@@ -100,11 +100,13 @@ metadata:
   namespace: htpc
 spec:
   ports:
-  - name: web
+  - name: webui
     port: 8787
+    protocol: TCP
     targetPort: 8787
   selector:
     app: htpc
+    run: readarr
 ---
 apiVersion: v1
 kind: Service
@@ -537,16 +539,20 @@ kind: Deployment
 metadata:
   labels:
     app: htpc
+    run: readarr
   name: readarr
   namespace: htpc
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: htpc
+      run: readarr
   template:
     metadata:
       labels:
         app: htpc
+        run: readarr
     spec:
       containers:
       - env:
