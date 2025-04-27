@@ -75,13 +75,24 @@ spec:
           path: /opt/htpc 
           type: DirectoryOrCreate 
         name: htpc-home
-        # persistentVolumeClaim:
-        #   claimName: local-path-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prowlarr
+spec:
+  template:
+    spec:
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readarr
 spec:
   template:
     spec:

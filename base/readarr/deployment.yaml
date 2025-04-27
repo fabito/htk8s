@@ -1,35 +1,32 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: radarr
-  name: radarr
+    run: readarr
+  name: readarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: radarr
+      run: readarr
   template:
     metadata:
       labels:
-        run: radarr
+        run: readarr
     spec:
       securityContext:
-        # runAsUser: 1000
-        # runAsGroup: 1000
         fsGroup: 1000
       initContainers:
       - name: chown
         image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /movies"]
+        command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /books"]
         volumeMounts:
         - mountPath: /config
           name: htpc-home
-          subPath: radarr
-        - mountPath: /movies
+          subPath: readarr
+        - mountPath: /books
           name: htpc-home
-          subPath: media/movies
+          subPath: media/books
       - name: config
         image: busybox
         command: ["sh", "-c"]
@@ -37,30 +34,34 @@ spec:
           runAsUser: 1000
           runAsGroup: 1000
         args:
-          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(RADARR)</UrlBase></Config>'> /config/config.xml;echo end;"
+          - |
+            echo 'Customizing config...'
+            if [[ ! -f /config/config.xml ]]; then
+              echo '<Config><UrlBase>/$(READARR)</UrlBase></Config>'> /config/config.xml
+            fi
+            echo 'Done customizing.'
         volumeMounts: 
         - mountPath: /config 
           name: htpc-home
-          subPath: radarr
+          subPath: readarr
       containers:
-      - env:
-        - name: TZ
-          value: Pacific/Auckland
+      - name: readarr
+        image: lscr.io/linuxserver/readarr
+        env:
         - name: PUID
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/radarr
-        name: radarr
+        - name: TZ
+          value: Pacific/Auckland
         ports:
-        - containerPort: 7878
-          name: webui
+        - containerPort: 8787
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -68,16 +69,16 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
-          subPath: radarr
-        - mountPath: /movies 
+          subPath: readarr
+        - mountPath: /books
           name: htpc-home
-          subPath: media/movies
-        - mountPath: /downloads 
+          subPath: media/books
+        - mountPath: /downloads
           name: htpc-home
           subPath: downloads
