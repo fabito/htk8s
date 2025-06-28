@@ -62,6 +62,23 @@ kind: Service
 metadata:
   labels:
     app: htpc
+  name: kavita
+  namespace: htpc
+spec:
+  ports:
+  - name: webui
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: htpc
+    app.kubernetes.io/name: kavita
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htpc
   name: prowlarr
   namespace: htpc
 spec:
@@ -345,6 +362,93 @@ spec:
           path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htpc
+  name: kavita
+  namespace: htpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htpc
+      app.kubernetes.io/name: kavita
+  template:
+    metadata:
+      labels:
+        app: htpc
+        app.kubernetes.io/name: kavita
+    spec:
+      containers:
+      - env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Pacific/Auckland
+        image: lscr.io/linuxserver/kavita:latest
+        name: kavita
+        ports:
+        - containerPort: 5000
+          name: webui
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+        - mountPath: /books
+          name: htpc-home
+          subPath: media/books/books
+        - mountPath: /manga
+          name: htpc-home
+          subPath: media/books/manga
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /config /books /comics /manga
+        image: busybox
+        name: chown
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+        - mountPath: /books
+          name: htpc-home
+          subPath: media/books/books
+        - mountPath: /manga
+          name: htpc-home
+          subPath: media/books/manga
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
+      - args:
+        - |
+          echo 'Customizing config...'
+          if [[ ! -f /config/config.xml ]]; then
+            echo '<Config><UrlBase>/kavita</UrlBase></Config>'> /config/config.xml
+          fi
+          echo 'Done customizing.'
+        command:
+        - sh
+        - -c
+        image: busybox
+        name: config
+        securityContext:
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+      securityContext:
+        fsGroup: 1000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -910,3 +1014,12 @@ spec:
       name: readarr
       namespace: htpc
       port: 8787
+  - kind: Rule
+    match: PathPrefix(`/kavita`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: kavita
+      namespace: htpc
+      port: 5000

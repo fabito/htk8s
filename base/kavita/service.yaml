@@ -8,5 +8,5 @@ spec:
   ports:
     - protocol: TCP
       port: 5000
-      targetPort: http
-  type: ClusterIP
+      targetPort: 5000
+      name: webui

@@ -12,47 +12,65 @@ spec:
       labels:
         app.kubernetes.io/name: kavita
     spec:
+      initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config /books /comics /manga"]
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+        - mountPath: /books
+          name: htpc-home
+          subPath: media/books/books
+        - mountPath: /manga
+          name: htpc-home
+          subPath: media/books/manga
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
+      - name: config
+        image: busybox
+        command: ["sh", "-c"]
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        args:
+          - |
+            echo 'Customizing config...'
+            if [[ ! -f /config/config.xml ]]; then
+              echo '<Config><UrlBase>/$(KAVITA)</UrlBase></Config>'> /config/config.xml
+            fi
+            echo 'Done customizing.'
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
       containers:
       - name: kavita
         image: lscr.io/linuxserver/kavita:latest
         env:
-          - name: TZ
-            value: "America/New_York" # Change to your timezone
-          - name: PUID
-            value: "1000" # Change to your PUID
-          - name: PGID
-            value: "1000" # Change to your PGID
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Pacific/Auckland
         ports:
         - containerPort: 5000
-          name: http
+          name: webui
         volumeMounts:
         - mountPath: /config
           name: htpc-home
-          subPath: kavita # Changed from readarr to kavita for dedicated config
+          subPath: kavita
         - mountPath: /books
           name: htpc-home
           subPath: media/books/books
-        - mountPath: /audiobooks
+        - mountPath: /manga
           name: htpc-home
-          subPath: media/books/audiobooks
+          subPath: media/books/manga
         - mountPath: /comics
           name: htpc-home
           subPath: media/books/comics
-        - mountPath: /downloads # This might not be strictly necessary for Kavita itself, but including as requested.
-          name: htpc-home
-          subPath: downloads
-        resources:
-          limits:
-            memory: "1Gi" # Adjust as needed
-            cpu: "500m"  # Adjust as needed
-          requests:
-            memory: "512Mi" # Adjust as needed
-            cpu: "250m"   # Adjust as needed
-      volumes:
-      - name: htpc-home
-        persistentVolumeClaim:
-          claimName: htpc-home # Assuming a PVC named 'htpc-home' exists
       securityContext:
-        runAsUser: 1000 # Should match PUID in configMap
-        runAsGroup: 1000 # Should match PGID in configMap
         fsGroup: 1000 # Should match PGID in configMap
