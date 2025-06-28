@@ -39,7 +39,7 @@ spec:
           - |
             echo 'Customizing config...'
             if [[ ! -f /config/config.xml ]]; then
-              echo '<Config><UrlBase>/$(KAVITA)</UrlBase></Config>'> /config/config.xml
+              echo '<Config><BaseUrl>/$(KAVITA)</BaseUrl></Config>'> /config/config.xml
             fi
             echo 'Done customizing.'
         volumeMounts:
