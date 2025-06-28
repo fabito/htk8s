@@ -13,7 +13,6 @@ It includes the following applications:
 * Transmission for torrents
 * ~~[Jackett](https://github.com/Jackett/Jackett) for torrent tracker searching~~
 * [Prowlarr](https://prowlarr.com/) for index management
-* [Readarr](https://readarr.com/) for ebooks
 * ~~[Emby](https://emby.media/)~~
 * [Jellyfin](https://jellyfin.org/)
 
@@ -98,7 +97,6 @@ You should also be able to reach each component's UI using the links below. Don'
 |bazarr|http://localhost/bazarr
 |jacket|http://localhost/jackett
 |prowlarr|http://localhost/prowlarr
-|readarr|http://localhost/readarr
 |transmission|http://localhost/transmission
 |jellyfin|http://localhost/
 
@@ -118,7 +116,6 @@ It uses a `hostPath` volume to store configuration and media files. It defaults 
 ├── downloads
 ├── jellyfin
 ├── prowlarr
-├── readarr
 ├── media
 │   ├── movies
 │   ├── books

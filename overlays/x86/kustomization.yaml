@@ -19,8 +19,6 @@ images:
     newTag: 4.9.0.50
   - name: linuxserver/prowlarr
     newTag: 1.34.1.5021-ls115
-  - name: lscr.io/linuxserver/readarr
-    newTag: nightly-0.4.16.2788-ls395
   - name: lscr.io/linuxserver/jellyfin
     newTag: 10.10.7ubu2404-ls61
   - name: lscr.io/linuxserver/kavita

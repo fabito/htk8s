@@ -113,23 +113,6 @@ kind: Service
 metadata:
   labels:
     app: htpc
-  name: readarr
-  namespace: htpc
-spec:
-  ports:
-  - name: webui
-    port: 8787
-    protocol: TCP
-    targetPort: 8787
-  selector:
-    app: htpc
-    run: readarr
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: htpc
   name: sonarr
   namespace: htpc
 spec:
@@ -646,119 +629,6 @@ kind: Deployment
 metadata:
   labels:
     app: htpc
-    run: readarr
-  name: readarr
-  namespace: htpc
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: htpc
-      run: readarr
-  template:
-    metadata:
-      labels:
-        app: htpc
-        run: readarr
-    spec:
-      containers:
-      - env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: Pacific/Auckland
-        image: lscr.io/linuxserver/readarr:nightly-0.4.16.2788-ls395
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        name: readarr
-        ports:
-        - containerPort: 8787
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(sed
-              -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: readarr
-        - mountPath: /books
-          name: htpc-home
-          subPath: media/books/books
-        - mountPath: /audiobooks
-          name: htpc-home
-          subPath: media/books/audiobooks
-        - mountPath: /comics
-          name: htpc-home
-          subPath: media/books/comics
-        - mountPath: /downloads
-          name: htpc-home
-          subPath: downloads
-      initContainers:
-      - command:
-        - sh
-        - -c
-        - chown -R 1000:1000 /config /books /comics /audiobooks
-        image: busybox
-        name: chown
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: readarr
-        - mountPath: /books
-          name: htpc-home
-          subPath: media/books/books
-        - mountPath: /audiobooks
-          name: htpc-home
-          subPath: media/books/audiobooks
-        - mountPath: /comics
-          name: htpc-home
-          subPath: media/books/comics
-      - args:
-        - |
-          echo 'Customizing config...'
-          if [[ ! -f /config/config.xml ]]; then
-            echo '<Config><UrlBase>/readarr</UrlBase></Config>'> /config/config.xml
-          fi
-          echo 'Done customizing.'
-        command:
-        - sh
-        - -c
-        image: busybox
-        name: config
-        securityContext:
-          runAsGroup: 1000
-          runAsUser: 1000
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: readarr
-      securityContext:
-        fsGroup: 1000
-      volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: htpc
     run: sonarr
   name: sonarr
   namespace: htpc
@@ -1005,15 +875,6 @@ spec:
       name: prowlarr
       namespace: htpc
       port: 9696
-  - kind: Rule
-    match: PathPrefix(`/readarr`)
-    middlewares: []
-    priority: 0
-    services:
-    - kind: Service
-      name: readarr
-      namespace: htpc
-      port: 8787
   - kind: Rule
     match: PathPrefix(`/kavita`)
     middlewares: []
