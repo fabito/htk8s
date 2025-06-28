@@ -430,11 +430,14 @@ spec:
           subPath: media/books/comics
       - args:
         - |
-          echo 'Customizing config...'
-          if [[ ! -f /config/config.xml ]]; then
-            echo '<Config><BaseUrl>/kavita</BaseUrl></Config>'> /config/config.xml
+          echo 'Customizing Kavita config...'
+          if [[ ! -f /config/appsettings.json ]]; then
+            echo '{"BaseUrl": "$(KAVITA)"}' > /config/appsettings.json
+            echo 'Kavita appsettings.json created.'
+          else
+            echo 'Kavita appsettings.json already exists.'
           fi
-          echo 'Done customizing.'
+          echo 'Done customizing Kavita config.'
         command:
         - sh
         - -c
