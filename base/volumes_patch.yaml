@@ -79,19 +79,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: readarr
-spec:
-  template:
-    spec:
-      volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: jellyfin
 spec:
   template:

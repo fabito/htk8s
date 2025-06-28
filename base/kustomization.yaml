@@ -3,8 +3,6 @@ kind: Kustomization
 
 namespace: htpc
 
-commonLabels:
-  app: htpc
 
 resources:
 - namespace.yaml
@@ -15,37 +13,39 @@ resources:
 - prowlarr
 - transmission
 - ingress-route.yaml
-- readarr
 - jellyfin
 - kavita
 
-patchesStrategicMerge:
-- volumes_patch.yaml
-- env_variables_patch.yaml
 
 vars:
-  - name: SONARR
-    objref:
-      kind: Service
-      name: sonarr
-      apiVersion: v1
-  - name: RADARR
-    objref:
-      kind: Service
-      name: radarr
-      apiVersion: v1
-  - name: PROWLARR
-    objref:
-      kind: Service
-      name: prowlarr
-      apiVersion: v1
-  - name: READARR
-    objref:
-      kind: Service
-      name: readarr
-      apiVersion: v1
-  - name: KAVITA
-    objref:
-      kind: Service
-      name: kavita
-      apiVersion: v1
+- fieldref: {}
+  name: SONARR
+  objref:
+    apiVersion: v1
+    kind: Service
+    name: sonarr
+- fieldref: {}
+  name: RADARR
+  objref:
+    apiVersion: v1
+    kind: Service
+    name: radarr
+- fieldref: {}
+  name: PROWLARR
+  objref:
+    apiVersion: v1
+    kind: Service
+    name: prowlarr
+- fieldref: {}
+  name: KAVITA
+  objref:
+    apiVersion: v1
+    kind: Service
+    name: kavita
+labels:
+- includeSelectors: true
+  pairs:
+    app: htpc
+patches:
+- path: volumes_patch.yaml
+- path: env_variables_patch.yaml

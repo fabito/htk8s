@@ -70,15 +70,6 @@ spec:
       namespace: "htpc"
       port: 9696
   - kind: Rule
-    match: PathPrefix(`/readarr`)
-    middlewares: []
-    priority: 0
-    services:
-    - kind: Service
-      name: readarr
-      namespace: "htpc"
-      port: 8787
-  - kind: Rule
     match: PathPrefix(`/kavita`)
     middlewares: []
     priority: 0
