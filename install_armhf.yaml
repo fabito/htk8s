@@ -432,7 +432,7 @@ spec:
         - |
           echo 'Customizing config...'
           if [[ ! -f /config/config.xml ]]; then
-            echo '<Config><UrlBase>/kavita</UrlBase></Config>'> /config/config.xml
+            echo '<Config><BaseUrl>/kavita</BaseUrl></Config>'> /config/config.xml
           fi
           echo 'Done customizing.'
         command:
