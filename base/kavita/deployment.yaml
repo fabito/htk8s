@@ -37,14 +37,14 @@ spec:
           runAsGroup: 1000
         args:
           - |
-                echo 'Customizing Kavita config...'
-                if [[ ! -f /config/appsettings.json ]]; then
-                  echo '{"BaseUrl": "/$(KAVITA)"}' > /config/appsettings.json
-                  echo 'Kavita appsettings.json created.'
-                else
-                  echo 'Kavita appsettings.json already exists.'
+            echo 'Customizing Kavita config...'
+            if [[ ! -f /config/appsettings.json ]]; then
+              echo '{"BaseUrl": "/$(KAVITA)"}' > /config/appsettings.json
+              echo 'Kavita appsettings.json created.'
+            else
+              echo 'Kavita appsettings.json already exists.'
             fi
-                echo 'Done customizing Kavita config.'
+            echo 'Done customizing Kavita config.'
         volumeMounts:
         - mountPath: /config
           name: htpc-home
