@@ -39,7 +39,7 @@ spec:
           - |
                 echo 'Customizing Kavita config...'
                 if [[ ! -f /config/appsettings.json ]]; then
-                  echo '{"BaseUrl": "$(KAVITA)"}' > /config/appsettings.json
+                  echo '{"BaseUrl": "/$(KAVITA)"}' > /config/appsettings.json
                   echo 'Kavita appsettings.json created.'
                 else
                   echo 'Kavita appsettings.json already exists.'
