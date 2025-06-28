@@ -17,6 +17,7 @@ resources:
 - ingress-route.yaml
 - readarr
 - jellyfin
+- kavita
 
 patchesStrategicMerge:
 - volumes_patch.yaml

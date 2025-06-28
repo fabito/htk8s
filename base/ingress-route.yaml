@@ -78,3 +78,28 @@ spec:
       name: readarr
       namespace: "htpc"
       port: 8787
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kavita-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: auth-forward-authelia@kubernetescrd, default-chain-no-auth@kubernetescrd
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`kavita.YOUR_DOMAIN`) # Replace YOUR_DOMAIN with your actual domain
+      kind: Rule
+      services:
+        - name: kavita
+          port: 5000
+  tls:
+    secretName: your-domain-tls # Replace with your TLS secret if you have one, or remove if using Let's Encrypt with Traefik
+    # Optional: if using cert-manager for TLS
+    # certResolver: letsencrypt # Uncomment if using cert-manager with a resolver named 'letsencrypt'
+    # domains:
+    #   - main: kavita.YOUR_DOMAIN # Replace YOUR_DOMAIN
