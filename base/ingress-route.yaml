@@ -78,3 +78,12 @@ spec:
       name: readarr
       namespace: "htpc"
       port: 8787
+  - kind: Rule
+    match: PathPrefix(`/kavita`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: kavita
+      namespace: "htpc"
+      port: 5000

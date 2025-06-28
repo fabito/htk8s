@@ -17,6 +17,7 @@ resources:
 - ingress-route.yaml
 - readarr
 - jellyfin
+- kavita
 
 patchesStrategicMerge:
 - volumes_patch.yaml
@@ -42,4 +43,9 @@ vars:
     objref:
       kind: Service
       name: readarr
+      apiVersion: v1
+  - name: KAVITA
+    objref:
+      kind: Service
+      name: kavita
       apiVersion: v1

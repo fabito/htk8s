@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kavita
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kavita
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kavita
+    spec:
+      initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config /books /comics /manga"]
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+        - mountPath: /books
+          name: htpc-home
+          subPath: media/books/books
+        - mountPath: /manga
+          name: htpc-home
+          subPath: media/books/manga
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
+      - name: config
+        image: busybox
+        command: ["sh", "-c"]
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        args:
+          - |
+            echo 'Customizing config...'
+            if [[ ! -f /config/config.xml ]]; then
+              echo '<Config><UrlBase>/$(KAVITA)</UrlBase></Config>'> /config/config.xml
+            fi
+            echo 'Done customizing.'
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+      containers:
+      - name: kavita
+        image: lscr.io/linuxserver/kavita:latest
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Pacific/Auckland
+        ports:
+        - containerPort: 5000
+          name: webui
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: kavita
+        - mountPath: /books
+          name: htpc-home
+          subPath: media/books/books
+        - mountPath: /manga
+          name: htpc-home
+          subPath: media/books/manga
+        - mountPath: /comics
+          name: htpc-home
+          subPath: media/books/comics
+      securityContext:
+        fsGroup: 1000 # Should match PGID in configMap

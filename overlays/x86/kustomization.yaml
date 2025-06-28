@@ -23,3 +23,5 @@ images:
     newTag: nightly-0.4.16.2788-ls395
   - name: lscr.io/linuxserver/jellyfin
     newTag: 10.10.7ubu2404-ls61
+  - name: lscr.io/linuxserver/kavita
+    newTag: v0.8.6.2-ls78
