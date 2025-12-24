@@ -20,3 +20,5 @@ images:
     newTag: latest
   - name: lscr.io/linuxserver/jellyfin
     newTag: arm32v7-latest
+  - name: lscr.io/linuxserver/lidarr
+    newTag: arm32v7-latest

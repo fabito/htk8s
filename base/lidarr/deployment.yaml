@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: lidarr
+  name: lidarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: lidarr
+  template:
+    metadata:
+      labels:
+        run: lidarr
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /music"]
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: lidarr
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music
+      - name: config
+        image: busybox
+        command: ["sh", "-c"]
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        args:
+          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(LIDARR)</UrlBase></Config>'> /config/config.xml;echo end;"
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: lidarr
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: lscr.io/linuxserver/lidarr
+        name: lidarr
+        ports:
+        - containerPort: 8686
+          name: webui
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: lidarr
+        - mountPath: /music 
+          name: htpc-home
+          subPath: media/music
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads
