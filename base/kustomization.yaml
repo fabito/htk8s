@@ -50,8 +50,3 @@ vars:
       kind: Service
       name: kavita
       apiVersion: v1
-  - name: LIDARR
-    objref:
-      kind: Service
-      name: lidarr
-      apiVersion: v1

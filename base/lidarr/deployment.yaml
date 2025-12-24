@@ -30,18 +30,6 @@ spec:
         - mountPath: /music
           name: htpc-home
           subPath: media/music
-      - name: config
-        image: busybox
-        command: ["sh", "-c"]
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        args:
-          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(LIDARR)</UrlBase></Config>'> /config/config.xml;echo end;"
-        volumeMounts: 
-        - mountPath: /config 
-          name: htpc-home
-          subPath: lidarr
       containers:
       - env:
         - name: TZ
@@ -50,6 +38,8 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: LIDARR__SERVER__URLBASE
+          value: /lidarr
         image: lscr.io/linuxserver/lidarr
         name: lidarr
         ports:

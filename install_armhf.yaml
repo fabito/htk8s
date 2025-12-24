@@ -503,6 +503,8 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: LIDARR__SERVER__URLBASE
+          value: /lidarr
         image: lscr.io/linuxserver/lidarr:arm32v7-latest
         livenessProbe:
           exec:
@@ -550,21 +552,6 @@ spec:
         - mountPath: /music
           name: htpc-home
           subPath: media/music
-      - args:
-        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/lidarr</UrlBase></Config>'>
-          /config/config.xml;echo end;
-        command:
-        - sh
-        - -c
-        image: busybox
-        name: config
-        securityContext:
-          runAsGroup: 1000
-          runAsUser: 1000
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: lidarr
       securityContext:
         fsGroup: 1000
       volumes:
