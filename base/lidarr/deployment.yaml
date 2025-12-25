@@ -56,7 +56,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=htk8s-api-key"
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$LIDARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -64,7 +64,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=htk8s-api-key"
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$LIDARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts: 
