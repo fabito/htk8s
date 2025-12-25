@@ -12,8 +12,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install yq
-        run: pip install yq
+      - name: Setup tools
+        uses: ./.github/actions/tools
 
       - name: Upgrade apps and manifests
         run: |
