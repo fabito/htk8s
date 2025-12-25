@@ -1,22 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 bases:
-- ../../base
-
+  - ../../base
 images:
   - name: linuxserver/jackett
-    newTag: v0.22.1646-ls708
+    newTag: v0.24.532-ls259
   - name: linuxserver/sonarr
-    newTag: 4.0.14.2939-ls280
+    newTag: 4.0.16.2944-ls300
   - name: linuxserver/radarr
     newTag: 6.0.4.10291-ls289
   - name: linuxserver/bazarr
-    newTag: v1.5.3-ls328
+    newTag: v1.5.3-ls329
   - name: linuxserver/transmission
-    newTag: 4.0.6-r4-ls290
+    newTag: 4.0.6-r5-ls322
   - name: emby/embyserver
-    newTag: 4.9.0.50
+    newTag: 4.9.4.1
   - name: linuxserver/prowlarr
     newTag: 2.3.0.5236-ls134
   - name: lscr.io/linuxserver/readarr

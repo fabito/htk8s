@@ -1,0 +1,29 @@
+name: Upgrade Apps
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup tools
+        uses: ./.github/actions/tools
+
+      - name: Upgrade apps and manifests
+        run: |
+          make upgrade-apps
+          make manifests
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: 'chore(apps): Automated app upgrades'
+          title: 'chore(apps): bump to latest versions'
+          body: 'This is an automated pull request to upgrade the installed apps.'
+          branch: 'feat/automate-app-upgrades'
