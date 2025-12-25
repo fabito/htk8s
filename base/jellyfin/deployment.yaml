@@ -47,3 +47,6 @@ spec:
         - mountPath: /books
           name: htpc-home
           subPath: media/books
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music

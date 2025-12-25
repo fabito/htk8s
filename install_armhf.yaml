@@ -372,6 +372,9 @@ spec:
         - mountPath: /books
           name: htpc-home
           subPath: media/books
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music
       securityContext:
         fsGroup: 1000
       volumes:
