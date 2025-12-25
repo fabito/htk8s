@@ -510,7 +510,7 @@ spec:
         - name: LIDARR__AUTH__REQUIRED
           value: enabled
         - name: LIDARR__AUTH__APIKEY
-          value: htk8s-api-key
+          value: htk8s-api-key-secure
         image: lscr.io/linuxserver/lidarr:3.1.0.4875-ls15
         livenessProbe:
           exec:
