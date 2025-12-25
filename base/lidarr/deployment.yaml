@@ -40,6 +40,12 @@ spec:
           value: "1000"
         - name: LIDARR__SERVER__URLBASE
           value: /lidarr
+        - name: LIDARR__AUTH__METHOD
+          value: external
+        - name: LIDARR__AUTH__REQUIRED
+          value: enabled
+        - name: LIDARR__AUTH__APIKEY
+          value: htk8s-api-key
         image: lscr.io/linuxserver/lidarr
         name: lidarr
         ports:
@@ -50,7 +56,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=htk8s-api-key"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -58,7 +64,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=htk8s-api-key"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts: 
