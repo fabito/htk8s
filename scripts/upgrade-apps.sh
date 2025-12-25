@@ -8,7 +8,7 @@ set -euo pipefail
 KUSTOMIZATION_FILE="overlays/x86/kustomization.yaml"
 
 # Pre-fetch linuxserver.io API data to avoid multiple calls
-LSIO_API_DATA=$(curl -s "https://api.linuxserver.io/api/v1/images")
+LSIO_API_DATA=$(curl -s "https://api.linuxserver.io/api/v1/images?include_config=false&include_deprecated=false")
 
 # Function to get the latest tag for a Docker image
 get_latest_tag() {
