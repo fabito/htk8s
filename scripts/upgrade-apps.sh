@@ -19,13 +19,13 @@ get_latest_tag() {
 
     echo "Fetching tags for $image_name..." >&2
 
-    if [[ "$image_name" == "lscr.io/"* ]]; then
-        echo "Skipping lscr.io image ($image_name) as per repository policy." >&2
-        echo "$current_tag"
-        return
-    elif [[ "$image_name" == "linuxserver/"* ]]; then
+    if [[ "$image_name" == "lscr.io/linuxserver/"* ]] || [[ "$image_name" == "linuxserver/"* ]]; then
         local repo_name
-        repo_name=$(echo "$image_name" | cut -d'/' -f2)
+        if [[ "$image_name" == "lscr.io/"* ]]; then
+            repo_name=$(echo "$image_name" | cut -d'/' -f3)
+        else
+            repo_name=$(echo "$image_name" | cut -d'/' -f2)
+        fi
         # Use pre-fetched data and parse with jq for the specific repo
         latest_tag=$(echo "$LSIO_API_DATA" | jq -r --arg repo "$repo_name" '.data.repositories.linuxserver[] | select(.name == $repo) | .version')
     elif [[ "$image_name" == */* ]]; then
