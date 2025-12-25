@@ -25,3 +25,5 @@ images:
     newTag: 10.10.7ubu2404-ls61
   - name: lscr.io/linuxserver/kavita
     newTag: v0.8.6.2-ls78
+  - name: lscr.io/linuxserver/lidarr
+    newTag: 3.1.0.4875-ls15

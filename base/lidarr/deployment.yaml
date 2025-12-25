@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: lidarr
+  name: lidarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: lidarr
+  template:
+    metadata:
+      labels:
+        run: lidarr
+    spec:
+      securityContext:
+        # runAsUser: 1000
+        # runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: chown
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /music"]
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: lidarr
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: LIDARR__SERVER__URLBASE
+          value: /lidarr
+        - name: LIDARR__AUTH__METHOD
+          value: external
+        - name: LIDARR__AUTH__REQUIRED
+          value: enabled
+        - name: LIDARR__AUTH__APIKEY
+          value: htk8s-api-key
+        image: lscr.io/linuxserver/lidarr
+        name: lidarr
+        ports:
+        - containerPort: 8686
+          name: webui
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$LIDARR__AUTH__APIKEY"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$LIDARR__AUTH__APIKEY"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: lidarr
+        - mountPath: /music 
+          name: htpc-home
+          subPath: media/music
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads

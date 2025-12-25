@@ -87,3 +87,12 @@ spec:
       name: kavita
       namespace: "htpc"
       port: 5000
+  - kind: Rule
+    match: PathPrefix(`/lidarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: lidarr
+      namespace: "htpc"
+      port: 8686

@@ -79,6 +79,23 @@ kind: Service
 metadata:
   labels:
     app: htpc
+  name: lidarr
+  namespace: htpc
+spec:
+  ports:
+  - name: webui
+    port: 8686
+    protocol: TCP
+    targetPort: 8686
+  selector:
+    app: htpc
+    run: lidarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htpc
   name: prowlarr
   namespace: htpc
 spec:
@@ -432,7 +449,7 @@ spec:
         - |
           echo 'Customizing Kavita config...'
           if [[ ! -f /config/appsettings.json ]]; then
-            echo '{"BaseUrl": "/$(KAVITA)"}' > /config/appsettings.json
+            echo '{"BaseUrl": "/kavita"}' > /config/appsettings.json
             echo 'Kavita appsettings.json created.'
           else
             echo 'Kavita appsettings.json already exists.'
@@ -450,6 +467,95 @@ spec:
         - mountPath: /config
           name: htpc-home
           subPath: kavita
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htpc
+    run: lidarr
+  name: lidarr
+  namespace: htpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htpc
+      run: lidarr
+  template:
+    metadata:
+      labels:
+        app: htpc
+        run: lidarr
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: LIDARR__SERVER__URLBASE
+          value: /lidarr
+        - name: LIDARR__AUTH__METHOD
+          value: external
+        - name: LIDARR__AUTH__REQUIRED
+          value: enabled
+        - name: LIDARR__AUTH__APIKEY
+          value: htk8s-api-key
+        image: lscr.io/linuxserver/lidarr:3.1.0.4875-ls15
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$LIDARR__AUTH__APIKEY"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        name: lidarr
+        ports:
+        - containerPort: 8686
+          name: webui
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$LIDARR__AUTH__APIKEY"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: lidarr
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music
+        - mountPath: /downloads
+          name: htpc-home
+          subPath: downloads
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /config && chown -R 1000:1000 /music
+        image: busybox
+        name: chown
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: lidarr
+        - mountPath: /music
+          name: htpc-home
+          subPath: media/music
       securityContext:
         fsGroup: 1000
       volumes:
@@ -1031,3 +1137,12 @@ spec:
       name: kavita
       namespace: htpc
       port: 5000
+  - kind: Rule
+    match: PathPrefix(`/lidarr`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: lidarr
+      namespace: htpc
+      port: 8686
