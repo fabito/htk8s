@@ -16,30 +16,13 @@ spec:
         run: prowlarr
     spec:
       securityContext:
-        fsGroup: 1000    
+        fsGroup: 1000
       initContainers:
       - name: chown
         image: busybox
         command: ["sh", "-c", "chown -R 1000:1000 /config"]
         volumeMounts:
-        - mountPath: /config 
-          name: htpc-home
-          subPath: prowlarr
-      - name: config
-        image: busybox
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        command: ["sh", "-c"]
-        args:
-          - |
-            echo 'Customizing Prowlarr config...'
-            if [[ ! -f /config/config.xml ]]; then
-              echo '<Config><UrlBase>/$(PROWLARR)</UrlBase></Config>'> /config/config.xml
-            fi
-            echo 'Prowlarr config customized.'
-        volumeMounts: 
-        - mountPath: /config 
+        - mountPath: /config
           name: htpc-home
           subPath: prowlarr
       containers:
@@ -50,6 +33,13 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: PROWLARR__SERVER__URLBASE
+          value: /prowlarr
+        - name: PROWLARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              name: arr-apps-api-key
+              key: api_key
         image: linuxserver/prowlarr
         name: prowlarr
         ports:
@@ -60,7 +50,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$PROWLARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -68,10 +58,10 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$PROWLARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: prowlarr
