@@ -8,6 +8,7 @@ commonLabels:
 
 resources:
 - namespace.yaml
+- api-key-configmap.yaml
 - jackett
 - radarr
 - sonarr
@@ -23,30 +24,3 @@ resources:
 patchesStrategicMerge:
 - volumes_patch.yaml
 - env_variables_patch.yaml
-
-vars:
-  - name: SONARR
-    objref:
-      kind: Service
-      name: sonarr
-      apiVersion: v1
-  - name: RADARR
-    objref:
-      kind: Service
-      name: radarr
-      apiVersion: v1
-  - name: PROWLARR
-    objref:
-      kind: Service
-      name: prowlarr
-      apiVersion: v1
-  - name: READARR
-    objref:
-      kind: Service
-      name: readarr
-      apiVersion: v1
-  - name: KAVITA
-    objref:
-      kind: Service
-      name: kavita
-      apiVersion: v1

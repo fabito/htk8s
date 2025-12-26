@@ -30,18 +30,6 @@ spec:
         - mountPath: /movies
           name: htpc-home
           subPath: media/movies
-      - name: config
-        image: busybox
-        command: ["sh", "-c"]
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        args:
-          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(RADARR)</UrlBase></Config>'> /config/config.xml;echo end;"
-        volumeMounts: 
-        - mountPath: /config 
-          name: htpc-home
-          subPath: radarr
       containers:
       - env:
         - name: TZ
@@ -50,6 +38,13 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: RADARR__SERVER__URLBASE
+          value: /radarr
+        - name: RADARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              name: arr-apps-api-key
+              key: api_key
         image: linuxserver/radarr
         name: radarr
         ports:
@@ -60,7 +55,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(RADARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -68,7 +63,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(RADARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts: 

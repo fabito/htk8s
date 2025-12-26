@@ -7,6 +7,16 @@ metadata:
   name: htpc
 ---
 apiVersion: v1
+data:
+  api_key: e575a60f4f4335d8109fd60355b7c650
+kind: ConfigMap
+metadata:
+  labels:
+    app: htpc
+  name: arr-apps-api-key
+  namespace: htpc
+---
+apiVersion: v1
 kind: Service
 metadata:
   labels:
@@ -234,10 +244,10 @@ spec:
           | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\nexport
           SONARR_API_KEY=$(cat /htpc/sonarr/config.xml | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\ncat
           << EOF > /htpc/bazarr/config/config.ini\n[sonarr]\napikey = ${SONARR_API_KEY}\nfull_update
-          = Daily\nip = sonarr\nonly_monitored = False\nbase_url = /sonarr\nssl =
-          False\nport = 8989\n\n[radarr]\napikey = ${RADARR_API_KEY}\nfull_update
-          = Daily\nip = radarr\nonly_monitored = False\nbase_url = /radarr\nssl =
-          False\nport = 7878\n\n[general]\nmovie_default_hi = False\nmovie_default_language
+          = Daily\nip = $(SONARR)\nonly_monitored = False\nbase_url = /$(SONARR)\nssl
+          = False\nport = 8989\n\n[radarr]\napikey = ${RADARR_API_KEY}\nfull_update
+          = Daily\nip = $(RADARR)\nonly_monitored = False\nbase_url = /$(RADARR)\nssl
+          = False\nport = 7878\n\n[general]\nmovie_default_hi = False\nmovie_default_language
           = []\nip = 0.0.0.0\nuse_scenename = True\nuse_postprocessing = False\nenabled_providers
           = subscene,tvsubtitles\nauto_update = True\nport = 6767\nuse_radarr = True\nbase_url
           = /bazarr/\npage_size = 25\nminimum_score_movie = 70\nbranch = master\nsingle_language
@@ -452,7 +462,7 @@ spec:
         - |
           echo 'Customizing Kavita config...'
           if [[ ! -f /config/appsettings.json ]]; then
-            echo '{"BaseUrl": "/kavita"}' > /config/appsettings.json
+            echo '{"BaseUrl": "/$(KAVITA)"}' > /config/appsettings.json
             echo 'Kavita appsettings.json created.'
           else
             echo 'Kavita appsettings.json already exists.'
@@ -508,19 +518,18 @@ spec:
           value: "1000"
         - name: LIDARR__SERVER__URLBASE
           value: /lidarr
-        - name: LIDARR__AUTH__METHOD
-          value: external
-        - name: LIDARR__AUTH__REQUIRED
-          value: enabled
         - name: LIDARR__AUTH__APIKEY
-          value: htk8s-api-key-secure
+          valueFrom:
+            configMapKeyRef:
+              key: api_key
+              name: arr-apps-api-key
         image: lscr.io/linuxserver/lidarr:3.1.0.4875-ls15
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$LIDARR__AUTH__APIKEY"
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$(LIDARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: lidarr
@@ -532,7 +541,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$LIDARR__AUTH__APIKEY"
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$(LIDARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -595,14 +604,20 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: PROWLARR__SERVER__URLBASE
+          value: /prowlarr
+        - name: PROWLARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              key: api_key
+              name: arr-apps-api-key
         image: linuxserver/prowlarr:2.3.0.5236-ls134
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(sed -ne
-              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(PROWLARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: prowlarr
@@ -614,8 +629,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(sed
-              -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(PROWLARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -629,25 +643,6 @@ spec:
         - chown -R 1000:1000 /config
         image: busybox
         name: chown
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: prowlarr
-      - args:
-        - |
-          echo 'Customizing Prowlarr config...'
-          if [[ ! -f /config/config.xml ]]; then
-            echo '<Config><UrlBase>/prowlarr</UrlBase></Config>'> /config/config.xml
-          fi
-          echo 'Prowlarr config customized.'
-        command:
-        - sh
-        - -c
-        image: busybox
-        name: config
-        securityContext:
-          runAsGroup: 1000
-          runAsUser: 1000
         volumeMounts:
         - mountPath: /config
           name: htpc-home
@@ -688,14 +683,20 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: RADARR__SERVER__URLBASE
+          value: /radarr
+        - name: RADARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              key: api_key
+              name: arr-apps-api-key
         image: linuxserver/radarr:6.0.4.10291-ls289
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(RADARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: radarr
@@ -707,8 +708,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne
-              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(RADARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -735,21 +735,6 @@ spec:
         - mountPath: /movies
           name: htpc-home
           subPath: media/movies
-      - args:
-        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/radarr</UrlBase></Config>'>
-          /config/config.xml;echo end;
-        command:
-        - sh
-        - -c
-        image: busybox
-        name: config
-        securityContext:
-          runAsGroup: 1000
-          runAsUser: 1000
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: radarr
       securityContext:
         fsGroup: 1000
       volumes:
@@ -786,14 +771,20 @@ spec:
           value: "1000"
         - name: TZ
           value: Pacific/Auckland
+        - name: READARR__SERVER__URLBASE
+          value: /readarr
+        - name: READARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              key: api_key
+              name: arr-apps-api-key
         image: lscr.io/linuxserver/readarr:nightly-0.4.16.2788-ls395
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(READARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: readarr
@@ -804,8 +795,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(sed
-              -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(READARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -844,25 +834,6 @@ spec:
         - mountPath: /comics
           name: htpc-home
           subPath: media/books/comics
-      - args:
-        - |
-          echo 'Customizing config...'
-          if [[ ! -f /config/config.xml ]]; then
-            echo '<Config><UrlBase>/readarr</UrlBase></Config>'> /config/config.xml
-          fi
-          echo 'Done customizing.'
-        command:
-        - sh
-        - -c
-        image: busybox
-        name: config
-        securityContext:
-          runAsGroup: 1000
-          runAsUser: 1000
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: readarr
       securityContext:
         fsGroup: 1000
       volumes:
@@ -899,14 +870,20 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: SONARR__SERVER__URLBASE
+          value: /sonarr
+        - name: SONARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              key: api_key
+              name: arr-apps-api-key
         image: linuxserver/sonarr:4.0.16.2944-ls300
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
+            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(SONARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: sonarr
@@ -918,8 +895,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne
-              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(SONARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -946,21 +922,6 @@ spec:
         - mountPath: /tv
           name: htpc-home
           subPath: media/tv
-      - args:
-        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>'>
-          /config/config.xml;echo end;
-        command:
-        - sh
-        - -c
-        image: busybox
-        name: config
-        securityContext:
-          runAsGroup: 1000
-          runAsUser: 1000
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: sonarr
       securityContext:
         fsGroup: 1000
       volumes:

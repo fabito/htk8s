@@ -33,23 +33,6 @@ spec:
         - mountPath: /comics
           name: htpc-home
           subPath: media/books/comics
-      - name: config
-        image: busybox
-        command: ["sh", "-c"]
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        args:
-          - |
-            echo 'Customizing config...'
-            if [[ ! -f /config/config.xml ]]; then
-              echo '<Config><UrlBase>/$(READARR)</UrlBase></Config>'> /config/config.xml
-            fi
-            echo 'Done customizing.'
-        volumeMounts: 
-        - mountPath: /config 
-          name: htpc-home
-          subPath: readarr
       containers:
       - name: readarr
         image: lscr.io/linuxserver/readarr
@@ -60,6 +43,13 @@ spec:
           value: "1000"
         - name: TZ
           value: Pacific/Auckland
+        - name: READARR__SERVER__URLBASE
+          value: /readarr
+        - name: READARR__AUTH__APIKEY
+          valueFrom:
+            configMapKeyRef:
+              name: arr-apps-api-key
+              key: api_key
         ports:
         - containerPort: 8787
         livenessProbe:
@@ -67,7 +57,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(READARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -75,7 +65,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(READARR__AUTH__APIKEY)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
