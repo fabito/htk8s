@@ -1,2 +1,7 @@
 temp*.yaml
 base/plex*.yaml
+
+#
+# Locally installed tools
+#
+/bin
