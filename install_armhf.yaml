@@ -518,6 +518,10 @@ spec:
           value: "1000"
         - name: LIDARR__SERVER__URLBASE
           value: /lidarr
+        - name: LIDARR__AUTH__METHOD
+          value: external
+        - name: LIDARR__AUTH__REQUIRED
+          value: enabled
         - name: LIDARR__AUTH__APIKEY
           valueFrom:
             configMapKeyRef:
