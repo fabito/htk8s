@@ -240,14 +240,11 @@ spec:
       - command:
         - sh
         - -c
-        - "mkdir -p /htpc/bazarr/config\nexport RADARR_API_KEY=$(cat /htpc/radarr/config.xml
-          | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\nexport
-          SONARR_API_KEY=$(cat /htpc/sonarr/config.xml | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\ncat
-          << EOF > /htpc/bazarr/config/config.ini\n[sonarr]\napikey = ${SONARR_API_KEY}\nfull_update
-          = Daily\nip = $(SONARR)\nonly_monitored = False\nbase_url = /$(SONARR)\nssl
-          = False\nport = 8989\n\n[radarr]\napikey = ${RADARR_API_KEY}\nfull_update
-          = Daily\nip = $(RADARR)\nonly_monitored = False\nbase_url = /$(RADARR)\nssl
-          = False\nport = 7878\n\n[general]\nmovie_default_hi = False\nmovie_default_language
+        - "mkdir -p /htpc/bazarr/config\ncat << EOF > /htpc/bazarr/config/config.ini\n[sonarr]\napikey
+          = ${API_KEY}\nfull_update = Daily\nip = sonarr\nonly_monitored = False\nbase_url
+          = /sonarr\nssl = False\nport = 8989\n\n[radarr]\napikey = ${API_KEY}\nfull_update
+          = Daily\nip = radarr\nonly_monitored = False\nbase_url = /radarr\nssl =
+          False\nport = 7878\n\n[general]\nmovie_default_hi = False\nmovie_default_language
           = []\nip = 0.0.0.0\nuse_scenename = True\nuse_postprocessing = False\nenabled_providers
           = subscene,tvsubtitles\nauto_update = True\nport = 6767\nuse_radarr = True\nbase_url
           = /bazarr/\npage_size = 25\nminimum_score_movie = 70\nbranch = master\nsingle_language
@@ -257,6 +254,12 @@ spec:
           = [['/tv', '/tv'], ['', ''], ['', ''], ['', ''], ['', '']]\npostprocessing_cmd
           = \nminimum_score = 90\ndebug = False\nuse_embedded_subs = True\nadaptive_searching
           = False\nEOF\n"
+        env:
+        - name: API_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: api_key
+              name: arr-apps-api-key-97hf2cghgg
         image: busybox
         name: config
         volumeMounts:
