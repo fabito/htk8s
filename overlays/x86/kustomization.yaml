@@ -4,7 +4,7 @@ bases:
   - ../../base
 images:
   - name: linuxserver/jackett
-    newTag: v0.24.545-ls260
+    newTag: v0.24.532-ls259
   - name: linuxserver/sonarr
     newTag: 4.0.16.2944-ls300
   - name: linuxserver/radarr
