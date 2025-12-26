@@ -22,3 +22,4 @@ curl -sL "https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VER
 chmod +x "$INSTALL_DIR/kubeval"
 
 echo "$INSTALL_DIR" >> "$GITHUB_PATH"
+echo "$RUNNER_WORKSPACE/$(basename $GITHUB_REPOSITORY)/bin" >> "$GITHUB_PATH"
