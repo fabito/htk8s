@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: arr-apps-api-key
-data:
-  api_key: "e575a60f4f4335d8109fd60355b7c650"

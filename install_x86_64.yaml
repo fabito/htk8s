@@ -13,7 +13,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: htpc
-  name: arr-apps-api-key
+  name: arr-apps-api-key-97hf2cghgg
   namespace: htpc
 ---
 apiVersion: v1
@@ -526,7 +526,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: api_key
-              name: arr-apps-api-key
+              name: arr-apps-api-key-97hf2cghgg
         image: lscr.io/linuxserver/lidarr:3.1.0.4875-ls15
         livenessProbe:
           exec:
@@ -614,7 +614,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: api_key
-              name: arr-apps-api-key
+              name: arr-apps-api-key-97hf2cghgg
         image: linuxserver/prowlarr:2.3.0.5236-ls134
         livenessProbe:
           exec:
@@ -693,7 +693,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: api_key
-              name: arr-apps-api-key
+              name: arr-apps-api-key-97hf2cghgg
         image: linuxserver/radarr:6.0.4.10291-ls289
         livenessProbe:
           exec:
@@ -781,7 +781,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: api_key
-              name: arr-apps-api-key
+              name: arr-apps-api-key-97hf2cghgg
         image: lscr.io/linuxserver/readarr:nightly-0.4.16.2788-ls395
         livenessProbe:
           exec:
@@ -880,7 +880,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: api_key
-              name: arr-apps-api-key
+              name: arr-apps-api-key-97hf2cghgg
         image: linuxserver/sonarr:4.0.16.2944-ls300
         livenessProbe:
           exec:

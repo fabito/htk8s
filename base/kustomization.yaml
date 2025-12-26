@@ -8,7 +8,6 @@ commonLabels:
 
 resources:
 - namespace.yaml
-- api-key-configmap.yaml
 - jackett
 - radarr
 - sonarr
@@ -24,3 +23,8 @@ resources:
 patchesStrategicMerge:
 - volumes_patch.yaml
 - env_variables_patch.yaml
+
+configMapGenerator:
+- name: arr-apps-api-key
+  literals:
+  - api_key=e575a60f4f4335d8109fd60355b7c650
