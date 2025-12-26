@@ -533,7 +533,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$(LIDARR__AUTH__APIKEY)"
+            - curl "http://localhost:8686/lidarr/api/v1/health?ApiKey=$LIDARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: lidarr
@@ -545,7 +545,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$(LIDARR__AUTH__APIKEY)"
+            - curl "http://localhost:8686/lidarr/api/v1/system/status?ApiKey=$LIDARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -621,7 +621,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(PROWLARR__AUTH__APIKEY)"
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$PROWLARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: prowlarr
@@ -633,7 +633,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(PROWLARR__AUTH__APIKEY)"
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$PROWLARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -700,7 +700,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(RADARR__AUTH__APIKEY)"
+            - curl "http://localhost:7878/radarr/api/health?ApiKey=$RADARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: radarr
@@ -712,7 +712,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(RADARR__AUTH__APIKEY)"
+            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$RADARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -788,7 +788,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(READARR__AUTH__APIKEY)"
+            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$READARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: readarr
@@ -799,7 +799,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(READARR__AUTH__APIKEY)"
+            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$READARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -887,7 +887,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(SONARR__AUTH__APIKEY)"
+            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$SONARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: sonarr
@@ -899,7 +899,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(SONARR__AUTH__APIKEY)"
+            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$SONARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:

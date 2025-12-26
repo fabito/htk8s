@@ -55,7 +55,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(RADARR__AUTH__APIKEY)"
+            - curl "http://localhost:7878/radarr/api/health?ApiKey=$RADARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -63,7 +63,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(RADARR__AUTH__APIKEY)"
+            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$RADARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts: 

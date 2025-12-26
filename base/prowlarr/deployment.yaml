@@ -50,7 +50,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(PROWLARR__AUTH__APIKEY)"
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$PROWLARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -58,7 +58,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(PROWLARR__AUTH__APIKEY)"
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$PROWLARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:

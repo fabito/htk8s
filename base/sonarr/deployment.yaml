@@ -55,7 +55,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(SONARR__AUTH__APIKEY)"
+            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$SONARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
@@ -63,7 +63,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(SONARR__AUTH__APIKEY)"
+            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$SONARR__AUTH__APIKEY"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts: 
