@@ -6,6 +6,7 @@
 set -euo pipefail
 
 KUSTOMIZATION_FILE="overlays/x86/kustomization.yaml"
+APPS_UPDATED="false"
 
 # Pre-fetch linuxserver.io API data to avoid multiple calls
 LSIO_API_DATA=$(curl -s "https://api.linuxserver.io/api/v1/images?include_config=false&include_deprecated=false")
@@ -65,6 +66,7 @@ for i in $(seq 0 $((image_count - 1))); do
     if [[ -n "$latest_tag" && "$latest_tag" != "$current_tag" ]]; then
         echo "Updating $name from $current_tag to $latest_tag" >&2
         yq -i ".images[$i].newTag = \"$latest_tag\"" "$TMP_KUSTOMIZATION_FILE"
+        APPS_UPDATED="true"
     else
         echo "No update found for $name. Current tag is the latest stable." >&2
     fi
@@ -73,3 +75,5 @@ done
 # Replace the original file with the updated one
 mv "$TMP_KUSTOMIZATION_FILE" "$KUSTOMIZATION_FILE"
 echo "Kustomization file updated." >&2
+
+echo "apps_updated=${APPS_UPDATED}" >> "$GITHUB_OUTPUT"

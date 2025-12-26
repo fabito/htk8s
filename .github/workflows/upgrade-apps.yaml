@@ -17,12 +17,16 @@ jobs:
         with:
           yq_version: "v4.20.2"
 
-      - name: Upgrade apps and manifests
-        run: |
-          make upgrade-apps
-          make manifests
+      - name: Upgrade apps
+        id: upgrade
+        run: make upgrade-apps
+
+      - name: Update manifests
+        if: steps.upgrade.outputs.apps_updated == 'true'
+        run: make manifests
 
       - name: Create Pull Request
+        if: steps.upgrade.outputs.apps_updated == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: 'chore(apps): Automated app upgrades'
