@@ -4,6 +4,12 @@ author: 'Stefan Prodan'
 branding:
   icon: 'command'
   color: 'blue'
+inputs:
+  yq_version:
+    description: 'The yq version to install'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  env:
+    YQ_VERSION: ${{ inputs.yq_version }}

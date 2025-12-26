@@ -6,6 +6,8 @@
 set -euo pipefail
 
 KUSTOMIZATION_FILE="overlays/x86/kustomization.yaml"
+UPDATED_APPS_COUNT=0
+COMMIT_MESSAGE_BODY=""
 
 # Pre-fetch linuxserver.io API data to avoid multiple calls
 LSIO_API_DATA=$(curl -s "https://api.linuxserver.io/api/v1/images?include_config=false&include_deprecated=false")
@@ -53,18 +55,20 @@ get_latest_tag() {
 TMP_KUSTOMIZATION_FILE=$(mktemp)
 cp "$KUSTOMIZATION_FILE" "$TMP_KUSTOMIZATION_FILE"
 
-image_count=$(yq -r '.images | length' "$TMP_KUSTOMIZATION_FILE")
+image_count=$(yq e '.images | length' "$TMP_KUSTOMIZATION_FILE")
 
 for i in $(seq 0 $((image_count - 1))); do
-    name=$(yq -r ".images[$i].name" "$TMP_KUSTOMIZATION_FILE")
-    current_tag=$(yq -r ".images[$i].newTag" "$TMP_KUSTOMIZATION_FILE")
+    name=$(yq e ".images[$i].name" "$TMP_KUSTOMIZATION_FILE")
+    current_tag=$(yq e ".images[$i].newTag" "$TMP_KUSTOMIZATION_FILE")
 
     echo "Processing image: $name with current tag: $current_tag" >&2
     latest_tag=$(get_latest_tag "$name" "$current_tag")
 
     if [[ -n "$latest_tag" && "$latest_tag" != "$current_tag" ]]; then
         echo "Updating $name from $current_tag to $latest_tag" >&2
-        yq -i -y ".images[$i].newTag = \"$latest_tag\"" "$TMP_KUSTOMIZATION_FILE"
+        yq -i ".images[$i].newTag = \"$latest_tag\"" "$TMP_KUSTOMIZATION_FILE"
+        UPDATED_APPS_COUNT=$((UPDATED_APPS_COUNT + 1))
+        COMMIT_MESSAGE_BODY="${COMMIT_MESSAGE_BODY}* ${name} from ${current_tag} to ${latest_tag}\n"
     else
         echo "No update found for $name. Current tag is the latest stable." >&2
     fi
@@ -73,3 +77,13 @@ done
 # Replace the original file with the updated one
 mv "$TMP_KUSTOMIZATION_FILE" "$KUSTOMIZATION_FILE"
 echo "Kustomization file updated." >&2
+
+if [ "$UPDATED_APPS_COUNT" -gt 0 ]; then
+    echo "apps_updated=true" >> "$GITHUB_OUTPUT"
+    COMMIT_MESSAGE=$(printf "chore(apps): Automated app upgrades\n\n%b" "${COMMIT_MESSAGE_BODY}")
+    echo "commit_message<<EOF" >> "$GITHUB_OUTPUT"
+    echo -e "$COMMIT_MESSAGE" >> "$GITHUB_OUTPUT"
+    echo "EOF" >> "$GITHUB_OUTPUT"
+else
+    echo "apps_updated=false" >> "$GITHUB_OUTPUT"
+fi
