@@ -5,3 +5,6 @@ base/plex*.yaml
 # Locally installed tools
 #
 /bin
+
+# Generated manifest files
+deploy/

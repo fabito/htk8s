@@ -1,0 +1,43 @@
+# Push Kubernetes manifests to GHCR
+name: push-manifests
+
+on:
+  push:
+    branches:
+      - 'main'
+
+permissions:
+  packages: write
+
+env:
+  OCI_REPO: "oci://ghcr.io/${{ github.repository_owner }}/manifests/${{ github.event.repository.name }}"
+
+jobs:
+  kubernetes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flux CLI
+        uses: fluxcd/flux2/action@main
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install tools
+        uses: ./.github/actions/tools
+      - name: Generate manifests
+        run: |
+          mkdir -p ./deploy/x86
+          kustomize build ./overlays/x86 --enable_kyaml=false --allow_id_changes=false --load_restrictor=LoadRestrictionsNone > ./deploy/x86/install.yaml
+      - name: Push manifests
+        run: |
+          flux push artifact $OCI_REPO:${{ github.sha }} \
+            --path="./deploy/x86" \
+            --source="$(git config --get remote.origin.url)" \
+            --revision="${{ github.ref_name }}@sha1:$(git rev-parse HEAD)"
+      - name: Tag manifests
+        run: |
+          flux tag artifact $OCI_REPO:${{ github.sha }} --tag latest
