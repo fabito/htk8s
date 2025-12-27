@@ -7,5 +7,4 @@ base/plex*.yaml
 /bin
 
 # Generated manifest files
-install_*.yaml
 deploy/
