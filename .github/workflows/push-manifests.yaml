@@ -1,3 +1,4 @@
+# Push Kubernetes manifests to GHCR
 name: push-manifests
 
 on:
@@ -25,13 +26,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install tools
+        uses: ./.github/actions/tools
       - name: Generate manifests
         run: |
-          ./update-manifests.sh
-      - name: Prepare manifests for push
-        run: |
           mkdir -p ./deploy/x86
-          mv ./install_x86_64.yaml ./deploy/x86/
+          kustomize build ./overlays/x86 --enable_kyaml=false --allow_id_changes=false --load_restrictor=LoadRestrictionsNone > ./deploy/x86/install.yaml
       - name: Push manifests
         run: |
           flux push artifact $OCI_REPO:${{ github.sha }} \
