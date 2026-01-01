@@ -223,30 +223,13 @@ spec:
       - command:
         - sh
         - -c
-        - until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr
-          &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;
+        - until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;
         image: busybox
         name: wait-for-sonarr-and-radarr
       - command:
         - sh
         - -c
-        - "mkdir -p /htpc/bazarr/config\nexport RADARR_API_KEY=$(cat /htpc/radarr/config.xml
-          | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\nexport
-          SONARR_API_KEY=$(cat /htpc/sonarr/config.xml | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\ncat
-          << EOF > /htpc/bazarr/config/config.ini\n[sonarr]\napikey = ${SONARR_API_KEY}\nfull_update
-          = Daily\nip = sonarr\nonly_monitored = False\nbase_url = /sonarr\nssl =
-          False\nport = 8989\n\n[radarr]\napikey = ${RADARR_API_KEY}\nfull_update
-          = Daily\nip = radarr\nonly_monitored = False\nbase_url = /radarr\nssl =
-          False\nport = 7878\n\n[general]\nmovie_default_hi = False\nmovie_default_language
-          = []\nip = 0.0.0.0\nuse_scenename = True\nuse_postprocessing = False\nenabled_providers
-          = subscene,tvsubtitles\nauto_update = True\nport = 6767\nuse_radarr = True\nbase_url
-          = /bazarr/\npage_size = 25\nminimum_score_movie = 70\nbranch = master\nsingle_language
-          = False\nuse_sonarr = True\nserie_default_hi = False\npath_mappings_movie
-          = [['/movies', '/movies'], ['', ''], ['', ''], ['', ''], ['', '']]\nserie_default_enabled
-          = False\nmovie_default_enabled = False\nserie_default_language = []\npath_mappings
-          = [['/tv', '/tv'], ['', ''], ['', ''], ['', ''], ['', '']]\npostprocessing_cmd
-          = \nminimum_score = 90\ndebug = False\nuse_embedded_subs = True\nadaptive_searching
-          = False\nEOF\n"
+        - "mkdir -p /htpc/bazarr/config\nexport RADARR_API_KEY=$(cat /htpc/radarr/config.xml | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\nexport SONARR_API_KEY=$(cat /htpc/sonarr/config.xml | sed -ne \"/ApiKey/{s/.*<ApiKey>\\(.*\\)<\\/ApiKey>.*/\\1/p;q;}\")\ncat << EOF > /htpc/bazarr/config/config.ini\n[sonarr]\napikey = ${SONARR_API_KEY}\nfull_update = Daily\nip = sonarr\nonly_monitored = False\nbase_url = /sonarr\nssl = False\nport = 8989\n\n[radarr]\napikey = ${RADARR_API_KEY}\nfull_update = Daily\nip = radarr\nonly_monitored = False\nbase_url = /radarr\nssl = False\nport = 7878\n\n[general]\nmovie_default_hi = False\nmovie_default_language = []\nip = 0.0.0.0\nuse_scenename = True\nuse_postprocessing = False\nenabled_providers = subscene,tvsubtitles\nauto_update = True\nport = 6767\nuse_radarr = True\nbase_url = /bazarr/\npage_size = 25\nminimum_score_movie = 70\nbranch = master\nsingle_language = False\nuse_sonarr = True\nserie_default_hi = False\npath_mappings_movie = [['/movies', '/movies'], ['', ''], ['', ''], ['', ''], ['', '']]\nserie_default_enabled = False\nmovie_default_enabled = False\nserie_default_language = []\npath_mappings = [['/tv', '/tv'], ['', ''], ['', ''], ['', ''], ['', '']]\npostprocessing_cmd = \nminimum_score = 90\ndebug = False\nuse_embedded_subs = True\nadaptive_searching = False\nEOF\n"
         image: busybox
         name: config
         volumeMounts:
@@ -288,7 +271,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/jackett:v0.24.532-ls259
+        image: linuxserver/jackett:v0.24.645-ls265
         name: jackett
         ports:
         - containerPort: 9117
@@ -302,9 +285,7 @@ spec:
           subPath: downloads
       initContainers:
       - args:
-        - 'echo start; [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/
-          &&  echo ''{ "BasePathOverride": "/jackett"}'' > /config/Jackett/ServerConfig.json;
-          echo end;'
+        - 'echo start; [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/ &&  echo ''{ "BasePathOverride": "/jackett"}'' > /config/Jackett/ServerConfig.json; echo end;'
         command:
         - sh
         - -c
@@ -350,7 +331,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: lscr.io/linuxserver/jellyfin:10.11.5ubu2404-ls14
+        image: lscr.io/linuxserver/jellyfin:10.11.5ubu2404-ls15
         name: jellyfin
         ports:
         - containerPort: 8096
@@ -410,7 +391,7 @@ spec:
           value: "1000"
         - name: TZ
           value: Pacific/Auckland
-        image: lscr.io/linuxserver/kavita:v0.8.8.3-ls94
+        image: lscr.io/linuxserver/kavita:v0.8.8.3-ls95
         name: kavita
         ports:
         - containerPort: 5000
@@ -601,8 +582,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(sed -ne
-              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:9696/prowlarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: prowlarr
@@ -614,8 +594,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(sed
-              -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:9696/prowlarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -694,8 +673,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: radarr
@@ -707,8 +685,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne
-              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -736,8 +713,7 @@ spec:
           name: htpc-home
           subPath: media/movies
       - args:
-        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/radarr</UrlBase></Config>'>
-          /config/config.xml;echo end;
+        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/radarr</UrlBase></Config>'> /config/config.xml;echo end;
         command:
         - sh
         - -c
@@ -792,8 +768,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: readarr
@@ -804,8 +779,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(sed
-              -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8787/readarr/api/v1/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -905,8 +879,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}'
-              </config/config.xml)"
+            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         name: sonarr
@@ -918,8 +891,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne
-              '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -947,8 +919,7 @@ spec:
           name: htpc-home
           subPath: media/tv
       - args:
-        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>'>
-          /config/config.xml;echo end;
+        - echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/sonarr</UrlBase></Config>'> /config/config.xml;echo end;
         command:
         - sh
         - -c
@@ -1001,7 +972,7 @@ spec:
           value: ""
         - name: HOST_WHITELIST
           value: ""
-        image: linuxserver/transmission:4.0.6-r5-ls322
+        image: linuxserver/transmission:4.0.6-r5-ls323
         name: transmission
         ports:
         - containerPort: 9091

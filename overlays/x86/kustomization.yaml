@@ -4,7 +4,7 @@ bases:
   - ../../base
 images:
   - name: linuxserver/jackett
-    newTag: v0.24.532-ls259
+    newTag: v0.24.645-ls265
   - name: linuxserver/sonarr
     newTag: 4.0.16.2944-ls300
   - name: linuxserver/radarr
@@ -12,7 +12,7 @@ images:
   - name: linuxserver/bazarr
     newTag: v1.5.3-ls329
   - name: linuxserver/transmission
-    newTag: 4.0.6-r5-ls322
+    newTag: 4.0.6-r5-ls323
   - name: emby/embyserver
     newTag: 4.9.4.1
   - name: linuxserver/prowlarr
@@ -20,8 +20,8 @@ images:
   - name: lscr.io/linuxserver/readarr
     newTag: nightly-0.4.16.2788-ls395
   - name: lscr.io/linuxserver/jellyfin
-    newTag: 10.11.5ubu2404-ls14
+    newTag: 10.11.5ubu2404-ls15
   - name: lscr.io/linuxserver/kavita
-    newTag: v0.8.8.3-ls94
+    newTag: v0.8.8.3-ls95
   - name: lscr.io/linuxserver/lidarr
     newTag: 3.1.0.4875-ls15
