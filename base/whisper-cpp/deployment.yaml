@@ -39,7 +39,7 @@ spec:
       containers:
       - name: whisper-cpp
         image: ghcr.io/ggml-org/whisper.cpp
-        command: ["/whisper-server"]
+        command: ["/app/build/bin/whisper-server"]
         args:
           - "--host"
           - "0.0.0.0"
