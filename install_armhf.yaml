@@ -1153,6 +1153,9 @@ spec:
           value: tiny
         image: curlimages/curl:8.18.0
         name: download-model
+        securityContext:
+          runAsGroup: 1000
+          runAsUser: 1000
         volumeMounts:
         - mountPath: /models
           name: htpc-home
