@@ -1099,6 +1099,8 @@ spec:
         - /v1/audio/transcriptions
         - -m
         - /models/ggml-$(WHISPER_MODEL).bin
+        - --threads
+        - "2"
         command:
         - /whisper-server
         env:
@@ -1123,6 +1125,13 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1Gi
+          requests:
+            cpu: "1"
+            memory: 512Mi
         volumeMounts:
         - mountPath: /models
           name: htpc-home

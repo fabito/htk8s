@@ -51,9 +51,18 @@ spec:
           - "/v1/audio/transcriptions"
           - "-m"
           - "/models/ggml-$(WHISPER_MODEL).bin"
+          - "--threads"
+          - "2"
         env:
         - name: WHISPER_MODEL
           value: "tiny"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1Gi
+          requests:
+            cpu: "1"
+            memory: 512Mi
         ports:
         - containerPort: 8080
           name: api
