@@ -49,15 +49,19 @@ spec:
         - containerPort: 8080
           name: api
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /health
             port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
         readinessProbe:
-          tcpSocket:
+          httpGet:
+            path: /health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /models
           name: htpc-home

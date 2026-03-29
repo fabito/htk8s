@@ -1098,19 +1098,23 @@ spec:
           value: tiny
         image: ghcr.io/ggml-org/whisper.cpp:main
         livenessProbe:
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          tcpSocket:
+          httpGet:
+            path: /health
             port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: whisper-cpp
         ports:
         - containerPort: 8080
           name: api
         readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
-          tcpSocket:
-            port: 8080
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /models
           name: htpc-home
