@@ -55,6 +55,46 @@ jobs:
       - name: Debug on failure
         if: failure()
         run: |
-          kubectl get pods -n htpc
-          kubectl get events -n htpc
+          echo "=== Pod Status ==="
+          kubectl get pods -n htpc -o wide
+          
+          echo ""
+          echo "=== Recent Events (sorted by time) ==="
+          kubectl get events -n htpc --sort-by='.lastTimestamp'
+          
+          echo ""
+          echo "=== All Resources ==="
           kubectl get all -n htpc
+          
+          echo ""
+          echo "=== Detailed Pod Descriptions ==="
+          for pod in $(kubectl get pods -n htpc -o jsonpath='{.items[*].metadata.name}'); do
+            echo "----------------------------------------"
+            echo "Pod: $pod"
+            echo "----------------------------------------"
+            kubectl describe pod "$pod" -n htpc
+          done
+          
+          echo ""
+          echo "=== Container Logs (all pods) ==="
+          for pod in $(kubectl get pods -n htpc -o jsonpath='{.items[*].metadata.name}'); do
+            echo "========================================"
+            echo "Logs for pod: $pod"
+            echo "========================================"
+            
+            # Get init container logs
+            for init_container in $(kubectl get pod "$pod" -n htpc -o jsonpath='{.spec.initContainers[*].name}' 2>/dev/null); do
+              echo "--- Init Container: $init_container ---"
+              kubectl logs "$pod" -n htpc -c "$init_container" --tail=50 2>/dev/null || echo "No logs available"
+            done
+            
+            # Get main container logs
+            for container in $(kubectl get pod "$pod" -n htpc -o jsonpath='{.spec.containers[*].name}'); do
+              echo "--- Container: $container ---"
+              kubectl logs "$pod" -n htpc -c "$container" --tail=100 2>/dev/null || echo "No logs available"
+              
+              # Also get previous logs if container restarted
+              echo "--- Container: $container (previous, if any) ---"
+              kubectl logs "$pod" -n htpc -c "$container" --previous --tail=100 2>/dev/null || echo "No previous logs"
+            done
+          done
