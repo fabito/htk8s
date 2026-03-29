@@ -1,0 +1,40 @@
+name: Integration Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pre-create hostPath directory
+        run: |
+          sudo mkdir -p /opt/htpc
+          sudo chmod -R 777 /opt/htpc
+
+      - name: Setup k3s
+        uses: fenio/setup-k3s@v2
+        with:
+          k3s-args: '--write-kubeconfig-mode 644 --disable-network-policy'
+
+      - name: Deploy apps
+        run: |
+          kubectl apply -k overlays/x86
+
+      - name: Wait for apps to be ready
+        run: |
+          echo "Waiting for all deployments in htpc namespace to be ready..."
+          kubectl wait --for=condition=available deployment --all -n htpc --timeout=600s
+
+      - name: Debug on failure
+        if: failure()
+        run: |
+          kubectl get pods -n htpc
+          kubectl get events -n htpc
+          kubectl get all -n htpc
