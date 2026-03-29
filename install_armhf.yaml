@@ -1102,7 +1102,7 @@ spec:
         - --threads
         - "2"
         command:
-        - /whisper-server
+        - /app/build/bin/whisper-server
         env:
         - name: WHISPER_MODEL
           value: tiny

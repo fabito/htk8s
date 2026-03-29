@@ -25,6 +25,24 @@ jobs:
           k3s-args: '--write-kubeconfig-mode 644 --disable-network-policy'
           version: 'v1.32.3+k3s1'
 
+      - name: Wait for Traefik CRDs
+        run: |
+          echo "Waiting for Traefik CRDs to be available..."
+          timeout=120
+          elapsed=0
+          while ! kubectl get crd ingressroutes.traefik.io >/dev/null 2>&1; do
+            if [ $elapsed -ge $timeout ]; then
+              echo "Timeout waiting for Traefik CRDs"
+              kubectl get crds
+              exit 1
+            fi
+            echo "Waiting for IngressRoute CRD... ($elapsed/$timeout seconds)"
+            sleep 5
+            elapsed=$((elapsed + 5))
+          done
+          echo "Traefik CRDs are available!"
+          kubectl get crds | grep traefik
+
       - name: Deploy apps
         run: |
           kubectl apply -k overlays/x86
@@ -32,11 +50,51 @@ jobs:
       - name: Wait for apps to be ready
         run: |
           echo "Waiting for all deployments in htpc namespace to be ready..."
-          kubectl wait --for=condition=available deployment --all -n htpc --timeout=600s
+          kubectl wait --for=condition=available deployment --all -n htpc --timeout=300s
 
       - name: Debug on failure
         if: failure()
         run: |
-          kubectl get pods -n htpc
-          kubectl get events -n htpc
+          echo "=== Pod Status ==="
+          kubectl get pods -n htpc -o wide
+          
+          echo ""
+          echo "=== Recent Events (sorted by time) ==="
+          kubectl get events -n htpc --sort-by='.lastTimestamp'
+          
+          echo ""
+          echo "=== All Resources ==="
           kubectl get all -n htpc
+          
+          echo ""
+          echo "=== Detailed Pod Descriptions ==="
+          for pod in $(kubectl get pods -n htpc -o jsonpath='{.items[*].metadata.name}'); do
+            echo "----------------------------------------"
+            echo "Pod: $pod"
+            echo "----------------------------------------"
+            kubectl describe pod "$pod" -n htpc
+          done
+          
+          echo ""
+          echo "=== Container Logs (all pods) ==="
+          for pod in $(kubectl get pods -n htpc -o jsonpath='{.items[*].metadata.name}'); do
+            echo "========================================"
+            echo "Logs for pod: $pod"
+            echo "========================================"
+            
+            # Get init container logs
+            for init_container in $(kubectl get pod "$pod" -n htpc -o jsonpath='{.spec.initContainers[*].name}' 2>/dev/null); do
+              echo "--- Init Container: $init_container ---"
+              kubectl logs "$pod" -n htpc -c "$init_container" --tail=50 2>/dev/null || echo "No logs available"
+            done
+            
+            # Get main container logs
+            for container in $(kubectl get pod "$pod" -n htpc -o jsonpath='{.spec.containers[*].name}'); do
+              echo "--- Container: $container ---"
+              kubectl logs "$pod" -n htpc -c "$container" --tail=100 2>/dev/null || echo "No logs available"
+              
+              # Also get previous logs if container restarted
+              echo "--- Container: $container (previous, if any) ---"
+              kubectl logs "$pod" -n htpc -c "$container" --previous --tail=100 2>/dev/null || echo "No previous logs"
+            done
+          done
