@@ -19,14 +19,11 @@ spec:
         fsGroup: 1000
       initContainers:
       - name: download-model
-        image: alpine:latest
+        image: curl-downloader
         command: ["/bin/sh", "-c"]
         args:
           - |
-            apk add --no-cache curl
             if [ ! -f /models/ggml-${WHISPER_MODEL}.bin ]; then
-              # The download script is basically a curl call
-              # https://github.com/ggml-org/whisper.cpp/blob/master/models/download-ggml-model.sh
               echo "Downloading model ${WHISPER_MODEL}..."
               curl -L https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-${WHISPER_MODEL}.bin -o /models/ggml-${WHISPER_MODEL}.bin
             else
@@ -41,10 +38,10 @@ spec:
           subPath: whisper
       containers:
       - name: whisper-cpp
-        image: ghcr.io/ggml-org/whisper.cpp:main
+        image: whisper-server
         command: ["/bin/sh", "-c"]
         args:
-          - "whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin"
+          - "/whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin"
         env:
         - name: WHISPER_MODEL
           value: "tiny"

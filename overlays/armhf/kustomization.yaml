@@ -22,3 +22,9 @@ images:
     newTag: arm32v7-latest
   - name: lscr.io/linuxserver/lidarr
     newTag: arm32v7-latest
+  - name: whisper-server
+    newName: ghcr.io/ggml-org/whisper.cpp
+    newTag: main
+  - name: curl-downloader
+    newName: curlimages/curl
+    newTag: 8.11.0

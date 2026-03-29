@@ -1089,7 +1089,7 @@ spec:
     spec:
       containers:
       - args:
-        - whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin
+        - /whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin
         command:
         - /bin/sh
         - -c
@@ -1118,10 +1118,7 @@ spec:
       initContainers:
       - args:
         - |
-          apk add --no-cache curl
           if [ ! -f /models/ggml-${WHISPER_MODEL}.bin ]; then
-            # The download script is basically a curl call
-            # https://github.com/ggml-org/whisper.cpp/blob/master/models/download-ggml-model.sh
             echo "Downloading model ${WHISPER_MODEL}..."
             curl -L https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-${WHISPER_MODEL}.bin -o /models/ggml-${WHISPER_MODEL}.bin
           else
@@ -1133,7 +1130,7 @@ spec:
         env:
         - name: WHISPER_MODEL
           value: tiny
-        image: alpine:latest
+        image: curlimages/curl:8.11.0
         name: download-model
         volumeMounts:
         - mountPath: /models
@@ -1251,7 +1248,6 @@ spec:
     match: PathPrefix(`/whisper`)
     middlewares:
     - name: whisper-strip-prefix
-    priority: 0
     services:
     - kind: Service
       name: whisper-cpp

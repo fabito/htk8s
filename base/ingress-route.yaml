@@ -100,7 +100,6 @@ spec:
     match: PathPrefix(`/whisper`)
     middlewares:
     - name: whisper-strip-prefix
-    priority: 0
     services:
     - kind: Service
       name: whisper-cpp
