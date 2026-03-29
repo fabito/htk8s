@@ -23,6 +23,7 @@ jobs:
         uses: fenio/setup-k3s@v2
         with:
           k3s-args: '--write-kubeconfig-mode 644 --disable-network-policy'
+          version: 'v1.32.3+k3s1'
 
       - name: Deploy apps
         run: |
