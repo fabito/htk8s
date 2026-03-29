@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: whisper-cpp
+  name: whisper-cpp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: whisper-cpp
+  template:
+    metadata:
+      labels:
+        run: whisper-cpp
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+      - name: download-model
+        image: curlimages/curl
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            if [ ! -f /models/ggml-${WHISPER_MODEL}.bin ]; then
+              echo "Downloading model ${WHISPER_MODEL}..."
+              curl -L https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-${WHISPER_MODEL}.bin -o /models/ggml-${WHISPER_MODEL}.bin
+            else
+              echo "Model ${WHISPER_MODEL} already exists."
+            fi
+        env:
+        - name: WHISPER_MODEL
+          value: "tiny"
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
+      containers:
+      - name: whisper-cpp
+        image: ghcr.io/ggml-org/whisper.cpp
+        command: ["/app/build/bin/whisper-server"]
+        args:
+          - "--host"
+          - "0.0.0.0"
+          - "--port"
+          - "8080"
+          - "--request-path"
+          - "/whisper"
+          - "--inference-path"
+          - "/v1/audio/transcriptions"
+          - "-m"
+          - "/models/ggml-$(WHISPER_MODEL).bin"
+          - "--threads"
+          - "2"
+        env:
+        - name: WHISPER_MODEL
+          value: "tiny"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1Gi
+          requests:
+            cpu: "1"
+            memory: 512Mi
+        ports:
+        - containerPort: 8080
+          name: api
+        livenessProbe:
+          httpGet:
+            path: /whisper/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /whisper/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
+      volumes:
+      - name: htpc-home
+        # This will be patched in base/volumes_patch.yaml

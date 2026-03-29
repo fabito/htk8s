@@ -22,3 +22,7 @@ images:
     newTag: arm32v7-latest
   - name: lscr.io/linuxserver/lidarr
     newTag: arm32v7-latest
+  - name: ghcr.io/ggml-org/whisper.cpp
+    newTag: main
+  - name: curlimages/curl
+    newTag: 8.18.0
