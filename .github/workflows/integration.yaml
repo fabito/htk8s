@@ -29,10 +29,8 @@ jobs:
 
       - name: Wait for apps to be ready
         run: |
-          echo "Waiting for pods in htpc namespace to be ready..."
-          # Give the deployments a moment to start creating pods
-          sleep 15
-          kubectl wait --for=condition=ready pod --all -n htpc --timeout=600s
+          echo "Waiting for all deployments in htpc namespace to be ready..."
+          kubectl wait --for=condition=available deployment --all -n htpc --timeout=600s
 
       - name: Debug on failure
         if: failure()
