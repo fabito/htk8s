@@ -19,7 +19,7 @@ jobs:
           sudo chmod -R 777 /opt/htpc
 
       - name: Setup k3s
-        uses: fenio/setup-k3s@v2
+        uses: fenio/setup-k3s@4f9e2a8a2f9a8c8b4b3e4d0d6c1e2f3a4b5c6d7
         with:
           k3s-args: '--write-kubeconfig-mode 644 --disable-network-policy'
 
