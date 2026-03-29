@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       initContainers:
       - name: download-model
-        image: curl-downloader
+        image: curlimages/curl
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -38,7 +38,7 @@ spec:
           subPath: whisper
       containers:
       - name: whisper-cpp
-        image: whisper-server
+        image: ghcr.io/ggml-org/whisper.cpp
         command: ["/bin/sh", "-c"]
         args:
           - "/whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin"

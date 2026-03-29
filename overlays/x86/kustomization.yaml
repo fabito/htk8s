@@ -25,9 +25,7 @@ images:
     newTag: v0.8.8.3-ls94
   - name: lscr.io/linuxserver/lidarr
     newTag: 3.1.0.4875-ls15
-  - name: whisper-server
-    newName: ghcr.io/ggml-org/whisper.cpp
+  - name: ghcr.io/ggml-org/whisper.cpp
     newTag: main-intel-9386f239401074690479731c1e41683fbbeac557
-  - name: curl-downloader
-    newName: curlimages/curl
+  - name: curlimages/curl
     newTag: 8.18.0
