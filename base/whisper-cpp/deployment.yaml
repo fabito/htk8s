@@ -41,7 +41,7 @@ spec:
         image: ghcr.io/ggml-org/whisper.cpp
         command: ["/bin/sh", "-c"]
         args:
-          - "/whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin"
+          - "/whisper-server --host 0.0.0.0 --port 8080 --request-path /whisper --inference-path /v1/audio/transcriptions -m /models/ggml-${WHISPER_MODEL}.bin"
         env:
         - name: WHISPER_MODEL
           value: "tiny"
@@ -50,14 +50,14 @@ spec:
           name: api
         livenessProbe:
           httpGet:
-            path: /health
+            path: /whisper/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /health
+            path: /whisper/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
