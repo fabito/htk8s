@@ -1137,6 +1137,16 @@ spec:
           name: htpc-home
           subPath: whisper
       initContainers:
+      - command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /models
+        image: busybox
+        name: chown
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
       - args:
         - |
           if [ ! -f /models/ggml-${WHISPER_MODEL}.bin ]; then
