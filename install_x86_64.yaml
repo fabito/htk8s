@@ -1106,7 +1106,7 @@ spec:
         env:
         - name: WHISPER_MODEL
           value: tiny
-        image: ghcr.io/ggml-org/whisper.cpp:main
+        image: ghcr.io/ggml-org/whisper.cpp:main-e6234cd435eb1299ac405916f4083a62ac044b81
         livenessProbe:
           httpGet:
             path: /whisper/health
