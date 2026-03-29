@@ -20,6 +20,9 @@ spec:
       initContainers:
       - name: download-model
         image: curlimages/curl
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
         command: ["/bin/sh", "-c"]
         args:
           - |
