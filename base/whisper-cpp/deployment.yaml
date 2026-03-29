@@ -39,9 +39,18 @@ spec:
       containers:
       - name: whisper-cpp
         image: ghcr.io/ggml-org/whisper.cpp
-        command: ["/bin/sh", "-c"]
+        command: ["/whisper-server"]
         args:
-          - "/whisper-server --host 0.0.0.0 --port 8080 --request-path /whisper --inference-path /v1/audio/transcriptions -m /models/ggml-${WHISPER_MODEL}.bin"
+          - "--host"
+          - "0.0.0.0"
+          - "--port"
+          - "8080"
+          - "--request-path"
+          - "/whisper"
+          - "--inference-path"
+          - "/v1/audio/transcriptions"
+          - "-m"
+          - "/models/ggml-$(WHISPER_MODEL).bin"
         env:
         - name: WHISPER_MODEL
           value: "tiny"
