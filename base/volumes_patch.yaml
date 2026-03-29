@@ -127,3 +127,16 @@ spec:
           path: /opt/htpc
           type: DirectoryOrCreate
         name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whisper-cpp
+spec:
+  template:
+    spec:
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home

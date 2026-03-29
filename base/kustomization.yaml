@@ -19,6 +19,7 @@ resources:
 - jellyfin
 - kavita
 - lidarr
+- whisper-cpp
 
 patchesStrategicMerge:
 - volumes_patch.yaml

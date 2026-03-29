@@ -176,6 +176,24 @@ spec:
     app: htpc
     run: transmission
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htpc
+    run: whisper-cpp
+  name: whisper-cpp
+  namespace: htpc
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: htpc
+    run: whisper-cpp
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1049,6 +1067,86 @@ spec:
           type: DirectoryOrCreate
         name: htpc-home
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htpc
+    run: whisper-cpp
+  name: whisper-cpp
+  namespace: htpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htpc
+      run: whisper-cpp
+  template:
+    metadata:
+      labels:
+        app: htpc
+        run: whisper-cpp
+    spec:
+      containers:
+      - args:
+        - whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: WHISPER_MODEL
+          value: tiny
+        image: ghcr.io/ggml-org/whisper.cpp:main
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 8080
+        name: whisper-cpp
+        ports:
+        - containerPort: 8080
+          name: api
+        readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 8080
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
+      initContainers:
+      - args:
+        - |
+          apk add --no-cache curl
+          if [ ! -f /models/ggml-${WHISPER_MODEL}.bin ]; then
+            # The download script is basically a curl call
+            # https://github.com/ggml-org/whisper.cpp/blob/master/models/download-ggml-model.sh
+            echo "Downloading model ${WHISPER_MODEL}..."
+            curl -L https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-${WHISPER_MODEL}.bin -o /models/ggml-${WHISPER_MODEL}.bin
+          else
+            echo "Model ${WHISPER_MODEL} already exists."
+          fi
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: WHISPER_MODEL
+          value: tiny
+        image: alpine:latest
+        name: download-model
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -1149,3 +1247,25 @@ spec:
       name: lidarr
       namespace: htpc
       port: 8686
+  - kind: Rule
+    match: PathPrefix(`/whisper`)
+    middlewares:
+    - name: whisper-strip-prefix
+    priority: 0
+    services:
+    - kind: Service
+      name: whisper-cpp
+      namespace: htpc
+      port: 8080
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  labels:
+    app: htpc
+  name: whisper-strip-prefix
+  namespace: htpc
+spec:
+  stripPrefix:
+    prefixes:
+    - /whisper

@@ -1,0 +1,9 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: whisper-strip-prefix
+  namespace: htpc
+spec:
+  stripPrefix:
+    prefixes:
+      - /whisper

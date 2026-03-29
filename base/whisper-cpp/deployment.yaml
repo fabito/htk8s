@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: whisper-cpp
+  name: whisper-cpp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: whisper-cpp
+  template:
+    metadata:
+      labels:
+        run: whisper-cpp
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+      - name: download-model
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            apk add --no-cache curl
+            if [ ! -f /models/ggml-${WHISPER_MODEL}.bin ]; then
+              # The download script is basically a curl call
+              # https://github.com/ggml-org/whisper.cpp/blob/master/models/download-ggml-model.sh
+              echo "Downloading model ${WHISPER_MODEL}..."
+              curl -L https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-${WHISPER_MODEL}.bin -o /models/ggml-${WHISPER_MODEL}.bin
+            else
+              echo "Model ${WHISPER_MODEL} already exists."
+            fi
+        env:
+        - name: WHISPER_MODEL
+          value: "tiny"
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
+      containers:
+      - name: whisper-cpp
+        image: ghcr.io/ggml-org/whisper.cpp:main
+        command: ["/bin/sh", "-c"]
+        args:
+          - "whisper-server --host 0.0.0.0 --port 8080 -m /models/ggml-${WHISPER_MODEL}.bin"
+        env:
+        - name: WHISPER_MODEL
+          value: "tiny"
+        ports:
+        - containerPort: 8080
+          name: api
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /models
+          name: htpc-home
+          subPath: whisper
+      volumes:
+      - name: htpc-home
+        # This will be patched in base/volumes_patch.yaml
