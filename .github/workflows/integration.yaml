@@ -25,6 +25,24 @@ jobs:
           k3s-args: '--write-kubeconfig-mode 644 --disable-network-policy'
           version: 'v1.32.3+k3s1'
 
+      - name: Wait for Traefik CRDs
+        run: |
+          echo "Waiting for Traefik CRDs to be available..."
+          timeout=120
+          elapsed=0
+          while ! kubectl get crd ingressroutes.traefik.io >/dev/null 2>&1; do
+            if [ $elapsed -ge $timeout ]; then
+              echo "Timeout waiting for Traefik CRDs"
+              kubectl get crds
+              exit 1
+            fi
+            echo "Waiting for IngressRoute CRD... ($elapsed/$timeout seconds)"
+            sleep 5
+            elapsed=$((elapsed + 5))
+          done
+          echo "Traefik CRDs are available!"
+          kubectl get crds | grep traefik
+
       - name: Deploy apps
         run: |
           kubectl apply -k overlays/x86
