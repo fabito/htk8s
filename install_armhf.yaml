@@ -1130,7 +1130,7 @@ spec:
         env:
         - name: WHISPER_MODEL
           value: tiny
-        image: curlimages/curl:8.11.0
+        image: curlimages/curl:8.18.0
         name: download-model
         volumeMounts:
         - mountPath: /models

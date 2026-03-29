@@ -27,4 +27,4 @@ images:
     newTag: main
   - name: curl-downloader
     newName: curlimages/curl
-    newTag: 8.11.0
+    newTag: 8.18.0
