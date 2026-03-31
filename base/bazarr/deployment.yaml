@@ -25,29 +25,33 @@ spec:
         command: ['sh', '-c', 'until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;']
       - name: config
         image: busybox
-        command: 
+        env:
+        - name: API_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: arr-apps-api-key
+              key: api_key
+        command:
         - "sh"
         - "-c"
         - |
           mkdir -p /htpc/bazarr/config
-          export RADARR_API_KEY=$(cat /htpc/radarr/config.xml | sed -ne "/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}")
-          export SONARR_API_KEY=$(cat /htpc/sonarr/config.xml | sed -ne "/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}")
           cat << EOF > /htpc/bazarr/config/config.ini
           [sonarr]
-          apikey = ${SONARR_API_KEY}
+          apikey = ${API_KEY}
           full_update = Daily
-          ip = $(SONARR)
+          ip = sonarr
           only_monitored = False
-          base_url = /$(SONARR)
+          base_url = /sonarr
           ssl = False
           port = 8989
 
           [radarr]
-          apikey = ${RADARR_API_KEY}
+          apikey = ${API_KEY}
           full_update = Daily
-          ip = $(RADARR)
+          ip = radarr
           only_monitored = False
-          base_url = /$(RADARR)
+          base_url = /radarr
           ssl = False
           port = 7878
 

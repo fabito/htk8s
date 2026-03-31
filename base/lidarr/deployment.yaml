@@ -45,7 +45,10 @@ spec:
         - name: LIDARR__AUTH__REQUIRED
           value: enabled
         - name: LIDARR__AUTH__APIKEY
-          value: htk8s-api-key-secure
+          valueFrom:
+            configMapKeyRef:
+              name: arr-apps-api-key
+              key: api_key
         image: lscr.io/linuxserver/lidarr
         name: lidarr
         ports:
