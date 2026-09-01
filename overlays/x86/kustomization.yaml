@@ -4,28 +4,28 @@ bases:
   - ../../base
 images:
   - name: linuxserver/jackett
-    newTag: v0.24.532-ls259
+    newTag: v0.24.2503-ls14
   - name: linuxserver/sonarr
-    newTag: 4.0.16.2944-ls300
+    newTag: 4.0.19.2979-ls322
   - name: linuxserver/radarr
-    newTag: 6.0.4.10291-ls289
+    newTag: 6.3.0.10514-ls314
   - name: linuxserver/bazarr
-    newTag: v1.5.3-ls329
+    newTag: v1.6.0-ls361
   - name: linuxserver/transmission
-    newTag: 4.0.6-r5-ls322
+    newTag: 4.1.3-r0-ls359
   - name: emby/embyserver
-    newTag: 4.9.4.1
+    newTag: 4.10.0.30-amd64
   - name: linuxserver/prowlarr
-    newTag: 2.3.0.5236-ls134
+    newTag: 2.5.2.5491-ls157
   - name: lscr.io/linuxserver/readarr
     newTag: nightly-0.4.16.2788-ls395
   - name: lscr.io/linuxserver/jellyfin
-    newTag: 10.11.5ubu2404-ls14
+    newTag: 10.11.11ubu2604-ls46
   - name: lscr.io/linuxserver/kavita
-    newTag: v0.8.8.3-ls94
+    newTag: v0.9.1.0-ls122
   - name: lscr.io/linuxserver/lidarr
-    newTag: 3.1.0.4875-ls15
+    newTag: 3.1.0.4875-ls40
   - name: ghcr.io/ggml-org/whisper.cpp
     newTag: main-e6234cd435eb1299ac405916f4083a62ac044b81
   - name: curlimages/curl
-    newTag: 8.18.0
+    newTag: sha256-fcf8b68aa7af25898d21b47096ceb05678665ae182052283bd0d7128149db55f.sig
