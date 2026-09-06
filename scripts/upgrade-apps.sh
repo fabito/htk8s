@@ -36,8 +36,8 @@ get_latest_tag() {
         namespace=$(echo "$image_name" | cut -d'/' -f1)
         repository=$(echo "$image_name" | cut -d'/' -f2)
         tags_url="https://hub.docker.com/v2/repositories/${namespace}/${repository}/tags/?page_size=100"
-        # Filter for stable, non-ARM tags
-        latest_tag=$(curl -s -L "$tags_url" | jq -r '.results[].name' | grep -v 'latest\|nightly\|testing\|dev\|beta\|version-\|arm' | sort -V | tail -n 1)
+        # Filter for stable, non-ARM, version-like tags (excludes cosign .sig/.att/.sbom artifact tags)
+        latest_tag=$(curl -s -L "$tags_url" | jq -r '.results[].name' | grep -E '^[0-9]+(\.[0-9]+)*(-[A-Za-z0-9.]+)?$' | grep -v 'latest\|nightly\|testing\|dev\|beta\|version-\|arm' | sort -V | tail -n 1)
     else
         echo "Unsupported image name format: $image_name" >&2
         return 1

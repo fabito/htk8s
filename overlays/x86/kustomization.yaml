@@ -28,4 +28,4 @@ images:
   - name: ghcr.io/ggml-org/whisper.cpp
     newTag: main-e6234cd435eb1299ac405916f4083a62ac044b81
   - name: curlimages/curl
-    newTag: sha256-fcf8b68aa7af25898d21b47096ceb05678665ae182052283bd0d7128149db55f.sig
+    newTag: 8.22.0

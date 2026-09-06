@@ -1132,7 +1132,7 @@ spec:
         env:
         - name: WHISPER_MODEL
           value: tiny
-        image: curlimages/curl:sha256-fcf8b68aa7af25898d21b47096ceb05678665ae182052283bd0d7128149db55f.sig
+        image: curlimages/curl:8.22.0
         name: download-model
         securityContext:
           runAsGroup: 1000
