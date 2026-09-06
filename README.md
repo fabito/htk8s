@@ -106,6 +106,10 @@ Check the [ingress-route.yaml](base/ingress-route.yaml) for more details.
 
 Each module except for Jellyfin is configured to respond on a custom basepath (check the init containers logic for more details).
 
+### Transmission configuration
+
+See [Configuring Transmission on k3s](base/transmission/README.md) for peer-port forwarding, persistent settings, per-torrent seeding policies and bandwidth tuning.
+
 ## How it works (WIP)
 
 It uses [LinuxServers](https://www.linuxserver.io/our-images/) images.
