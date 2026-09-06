@@ -7,6 +7,9 @@ metadata:
   name: transmission
 spec:
   replicas: 1
+  # Never run two daemons against the same writable /config during an update.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       run: transmission
@@ -41,6 +44,9 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        # LinuxServer also disables peer-port-random-on-start when PEERPORT is set.
+        - name: PEERPORT
+          value: "51413"
         - name: WHITELIST
           value: ""
         - name: HOST_WHITELIST

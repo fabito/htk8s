@@ -172,9 +172,18 @@ spec:
     port: 9091
     protocol: TCP
     targetPort: 9091
+  - name: peer-tcp
+    port: 51413
+    protocol: TCP
+    targetPort: 51413
+  - name: peer-udp
+    port: 51413
+    protocol: UDP
+    targetPort: 51413
   selector:
     app: htpc
     run: transmission
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -972,6 +981,8 @@ spec:
     matchLabels:
       app: htpc
       run: transmission
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -986,6 +997,8 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: PEERPORT
+          value: "51413"
         - name: WHITELIST
           value: ""
         - name: HOST_WHITELIST
