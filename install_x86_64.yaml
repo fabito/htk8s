@@ -231,7 +231,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/bazarr:v1.6.0-ls361
+        image: linuxserver/bazarr:v1.6.0-ls363
         name: bazarr
         ports:
         - containerPort: 6767
@@ -298,7 +298,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/jackett:v0.24.2503-ls14
+        image: linuxserver/jackett:v0.24.2572-ls26
         name: jackett
         ports:
         - containerPort: 9117
@@ -358,7 +358,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: lscr.io/linuxserver/jellyfin:10.11.11ubu2604-ls46
+        image: lscr.io/linuxserver/jellyfin:12.0ubu2604-ls48
         name: jellyfin
         ports:
         - containerPort: 8096
@@ -418,7 +418,7 @@ spec:
           value: "1000"
         - name: TZ
           value: Pacific/Auckland
-        image: lscr.io/linuxserver/kavita:v0.9.1.0-ls122
+        image: lscr.io/linuxserver/kavita:v0.9.1.4-ls124
         name: kavita
         ports:
         - containerPort: 5000
@@ -522,7 +522,7 @@ spec:
           value: enabled
         - name: LIDARR__AUTH__APIKEY
           value: htk8s-api-key-secure
-        image: lscr.io/linuxserver/lidarr:3.1.0.4875-ls40
+        image: lscr.io/linuxserver/lidarr:3.1.0.4875-ls41
         livenessProbe:
           exec:
             command:
@@ -603,7 +603,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/prowlarr:2.5.2.5491-ls157
+        image: linuxserver/prowlarr:2.5.2.5491-ls159
         livenessProbe:
           exec:
             command:
@@ -694,7 +694,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/radarr:6.3.0.10514-ls314
+        image: linuxserver/radarr:6.3.0.10514-ls315
         livenessProbe:
           exec:
             command:
@@ -900,7 +900,7 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        image: linuxserver/sonarr:4.0.19.2979-ls322
+        image: linuxserver/sonarr:4.0.19.2979-ls324
         livenessProbe:
           exec:
             command:
@@ -1003,7 +1003,7 @@ spec:
           value: ""
         - name: HOST_WHITELIST
           value: ""
-        image: linuxserver/transmission:4.1.3-r0-ls359
+        image: linuxserver/transmission:4.1.3-r0-ls361
         name: transmission
         ports:
         - containerPort: 9091
