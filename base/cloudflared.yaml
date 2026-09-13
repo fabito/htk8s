@@ -19,7 +19,6 @@ spec:
       - name: cloudflared
         image: cloudflare/cloudflared:latest
         imagePullPolicy: Always
-        command: ["cloudflared"]
         args:
         - "tunnel"
         - "--no-autoupdate"

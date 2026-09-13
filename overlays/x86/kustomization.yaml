@@ -3,8 +3,6 @@ kind: Kustomization
 bases:
   - ../../base
 images:
-  - name: linuxserver/jackett
-    newTag: v0.24.2572-ls26
   - name: linuxserver/sonarr
     newTag: 4.0.19.2979-ls324
   - name: linuxserver/radarr

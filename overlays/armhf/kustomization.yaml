@@ -5,8 +5,6 @@ bases:
 - ../../base
 
 images:
-  - name: linuxserver/jackett
-    newTag: arm32v6-latest
   - name: linuxserver/sonarr
     newTag: arm32v6-latest
   - name: linuxserver/radarr

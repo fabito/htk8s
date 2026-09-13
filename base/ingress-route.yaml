@@ -16,15 +16,6 @@ spec:
       namespace: "htpc"
       port: 8096
   - kind: Rule
-    match: PathPrefix(`/jackett`)
-    middlewares: []
-    priority: 0
-    services:
-    - kind: Service
-      name: jackett
-      namespace: "htpc"
-      port: 9117
-  - kind: Rule
     match: PathPrefix(`/sonarr`)
     middlewares: []
     priority: 0
